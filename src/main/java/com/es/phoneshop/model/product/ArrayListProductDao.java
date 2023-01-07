@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 public class ArrayListProductDao implements ProductDao {
     private List<Product> products;
     private Long maxId= Long.valueOf(0);
-
     private Object lock=new Object();
 
     public ArrayListProductDao(){
