@@ -23,7 +23,7 @@ public class ArrayListProductDaoTest
                 new BigDecimal(100), usd, 100, "https://raw.githubusercontent." +
                 "com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
-        saveNewProductTest();
+        saveProductTest();
     }
 
     @Test
@@ -32,13 +32,13 @@ public class ArrayListProductDaoTest
     }
 
     @Test
-    public void saveNewProductTest() throws ProductNotFoundException {
+    public void saveProductTest() throws ProductNotFoundException {
         productDao.save(product);
         assertTrue(product.getId()>0);
     }
 
     @Test
-    public void deleteTest() throws ProductNotFoundException {
+    public void deleteProductTest() throws ProductNotFoundException {
         productDao.delete(product.getId());
         assertNull(productDao.getProduct(product.getId()));
     }
