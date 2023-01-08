@@ -7,7 +7,10 @@ import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 public class ArrayListProductDaoTest
 {
@@ -23,7 +26,7 @@ public class ArrayListProductDaoTest
                 new BigDecimal(100), usd, 100, "https://raw.githubusercontent." +
                 "com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
-        saveProductTest();
+       productDao.save(product);
     }
 
     @Test
@@ -40,7 +43,12 @@ public class ArrayListProductDaoTest
     @Test
     public void deleteProductTest() throws ProductNotFoundException {
         productDao.delete(product.getId());
-        assertNull(productDao.getProduct(product.getId()));
+        List<Product> products=productDao.findProducts().
+                stream().
+                filter(prd->product.getId().equals(prd.getId())).
+                collect(Collectors.toList());
+
+        assertTrue(products.isEmpty());
     }
 
     @Test
