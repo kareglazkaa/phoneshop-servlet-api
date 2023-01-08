@@ -1,9 +1,7 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
@@ -27,13 +25,30 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts() {
+    public List<Product> findProducts(String query) {
         synchronized (lock) {
-            return products.stream().
-                    filter(product -> product.getPrice()!=null).
-                    filter(product -> product.getStock()>0).
-                    collect(Collectors.toList());
+            List<Product> resultList;
+            resultList=products.stream()
+                    .filter(product -> query == null || query.isEmpty() || containsQuery(query,product.getDescription())!=0)
+                    .filter(product -> product.getPrice()!=null)
+                    .filter(product -> product.getStock()>0)
+                    .collect(Collectors.toList());
+
+            resultList.sort((o1, o2) ->
+                    containsQuery(query,o2.getDescription()).compareTo(containsQuery(query,o1.getDescription())));
+
+            return resultList;
         }
+    }
+
+    public Integer containsQuery(String query,String productDescription){
+        String[] words = query.split(" ");
+        int count=0;
+        for(String word:words){
+            if(productDescription.contains(word))
+                count++;
+        }
+        return count;
     }
 
     @Override
@@ -57,10 +72,10 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public void delete(Long id) throws ProductNotFoundException {
         synchronized (lock) {
-            Product productToDelete = products.stream().
-                    filter(product -> id.equals(product.getId())).
-                    findAny().
-                    orElseThrow(() -> new ProductNotFoundException());
+            Product productToDelete = products.stream()
+                    .filter(product -> id.equals(product.getId()))
+                    .findAny()
+                    .orElseThrow(() -> new ProductNotFoundException());
             products.remove(productToDelete);
         }
     }
