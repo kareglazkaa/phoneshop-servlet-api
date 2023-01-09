@@ -9,7 +9,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
-
     private static ProductDao instance;
     private List<Product> products;
     private Long maxId= Long.valueOf(0);
