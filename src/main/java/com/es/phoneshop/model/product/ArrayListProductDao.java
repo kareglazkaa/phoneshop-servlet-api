@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private static ProductDao instance; private List<Product> products;
+    private static ProductDao instance;
+    private List<Product> products;
     private Long maxId= Long.valueOf(0);
     private Object lock=new Object();
     public static ProductDao getInstance(){
@@ -24,7 +25,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public Product getProduct(Long id) throws ProductNotFoundException {
+    public Product getProduct(Long id)  {
         synchronized (lock) {
             return products.stream().
                     filter(product -> id.equals(product.getId())).
@@ -95,7 +96,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void delete(Long id) throws ProductNotFoundException {
+    public void delete(Long id) {
         synchronized (lock) {
             Product productToDelete = products.stream()
                     .filter(product -> id.equals(product.getId()))
