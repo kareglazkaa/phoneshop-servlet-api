@@ -1,5 +1,7 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.enums.SortField;
+import com.es.phoneshop.enums.SortOrder;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
@@ -13,13 +15,21 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
     private ProductDao productDao=new ArrayListProductDao();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String query=request.getParameter("query");
-        request.setAttribute("products", productDao.findProducts(query));
+        String sortFiled=request.getParameter("sort");
+        String sortOrder=request.getParameter("order");
+
+        request.setAttribute("products",
+                productDao.findProducts(query,
+                Optional.ofNullable(sortFiled).map(SortField::valueOf).orElse(null),
+                Optional.ofNullable(sortOrder).map(SortOrder::valueOf).orElse(null)));
+
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 

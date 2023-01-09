@@ -1,4 +1,6 @@
 package com.es.phoneshop.model.product;
+import com.es.phoneshop.enums.SortField;
+import com.es.phoneshop.enums.SortOrder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,10 +18,12 @@ public class ArrayListProductDaoTest
 {
     private ProductDao productDao;
     private Product product;
+    private String query;
 
     @Before
     public void setup() throws ProductNotFoundException {
         productDao = new ArrayListProductDao();
+        query="Samsung";
 
         Currency usd = Currency.getInstance("USD");
         product= new Product("test", "Samsung Galaxy S",
@@ -27,11 +31,12 @@ public class ArrayListProductDaoTest
                 "com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
        productDao.save(product);
+
     }
 
     @Test
     public void testFindProductsNoResults() {
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts(query, SortField.price, SortOrder.desc).isEmpty());
     }
 
     @Test
@@ -43,7 +48,7 @@ public class ArrayListProductDaoTest
     @Test
     public void deleteProductTest() throws ProductNotFoundException {
         productDao.delete(product.getId());
-        List<Product> products=productDao.findProducts().
+        List<Product> products=productDao.findProducts(query, SortField.price, SortOrder.desc).
                 stream().
                 filter(prd->product.getId().equals(prd.getId())).
                 collect(Collectors.toList());
@@ -60,7 +65,7 @@ public class ArrayListProductDaoTest
 
     @Test
     public void findProductsTest(){
-        List<Product> products=productDao.findProducts();
+        List<Product> products=productDao.findProducts(query, SortField.price, SortOrder.desc);
         assertTrue(products.stream().
                 filter(prd->prd.getPrice()==null && prd.getStock()>0).
                 collect(Collectors.toList()).

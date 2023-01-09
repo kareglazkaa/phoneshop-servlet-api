@@ -1,5 +1,8 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.enums.SortField;
+import com.es.phoneshop.enums.SortOrder;
+
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,30 +28,46 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts(String query) {
+    public List<Product> findProducts(String query, SortField sortFiled, SortOrder sortOrder) {
         synchronized (lock) {
-            List<Product> resultList;
-            resultList=products.stream()
+
+            Comparator<Product> comparatorFiled=Comparator.comparing(product -> {
+                if (SortField.description == sortFiled)
+                    return (Comparable) product.getDescription();
+                else if(SortField.price==sortFiled)
+                    return (Comparable) product.getPrice();
+                else
+                    return (Comparable) containsQuery(query, product.getDescription());
+
+            });
+
+            if(query!=null || !query.isEmpty()){
+                comparatorFiled=comparatorFiled.reversed();
+            }
+            if(SortOrder.desc==sortOrder){
+                comparatorFiled=comparatorFiled.reversed();
+            }
+
+            return products.stream()
                     .filter(product -> query == null || query.isEmpty() || containsQuery(query,product.getDescription())!=0)
                     .filter(product -> product.getPrice()!=null)
                     .filter(product -> product.getStock()>0)
+                    .sorted(comparatorFiled)
                     .collect(Collectors.toList());
-
-            resultList.sort((o1, o2) ->
-                    containsQuery(query,o2.getDescription()).compareTo(containsQuery(query,o1.getDescription())));
-
-            return resultList;
         }
     }
 
     public Integer containsQuery(String query,String productDescription){
-        String[] words = query.split(" ");
-        int count=0;
-        for(String word:words){
-            if(productDescription.contains(word))
-                count++;
+        int count = 0;
+        if(query!=null && !query.isEmpty()) {
+            String[] words = query.split(" ");
+            for (String word : words) {
+                if (productDescription.contains(word))
+                    count++;
+            }
         }
         return count;
+
     }
 
     @Override
