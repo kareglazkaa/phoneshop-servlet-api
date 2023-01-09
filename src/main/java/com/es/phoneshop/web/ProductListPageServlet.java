@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
-    private ProductDao productDao=new ArrayListProductDao();
+    private ProductDao productDao=ArrayListProductDao.getInstance();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String query=request.getParameter("query");
