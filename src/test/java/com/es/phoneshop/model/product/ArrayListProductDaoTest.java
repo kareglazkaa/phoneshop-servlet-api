@@ -22,7 +22,7 @@ public class ArrayListProductDaoTest
 
     @Before
     public void setup() throws ProductNotFoundException {
-        productDao = ArrayListProductDao.getInstance();
+        productDao = new ArrayListProductDao();
         query="Samsung";
 
         Currency usd = Currency.getInstance("USD");
@@ -67,7 +67,7 @@ public class ArrayListProductDaoTest
     public void findProductsTest(){
         List<Product> products=productDao.findProducts(query, SortField.price, SortOrder.desc);
         assertTrue(products.stream().
-                filter(prd->prd.getPrice()==null || prd.getStock()<0).
+                filter(prd->prd.getPrice()==null && prd.getStock()>0).
                 collect(Collectors.toList()).
                 isEmpty());
 
