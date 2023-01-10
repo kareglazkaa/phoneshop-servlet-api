@@ -18,13 +18,13 @@
         <td>Image</td>
         <td>
           Description
-          <tags:sortLink sort="description" order="asc"></tags:sortLink>
-          <tags:sortLink sort="description" order="desc"></tags:sortLink>
+          <a href="?sort=description&order=asc&query=${param.query}">asc</a>
+          <a href="?sort=description&order=desc&query=${param.query}">desc</a>
         </td>
         <td class="price">
           Price
-          <tags:sortLink sort="price" order="asc"></tags:sortLink>
-          <tags:sortLink sort="price" order="desc"></tags:sortLink>
+          <a href="?sort=price&order=asc&query=${param.query}">asc</a>
+          <a href="?sort=price&order=desc&query=${param.query}">desc</a>
         </td>
       </tr>
     </thead>
@@ -38,7 +38,6 @@
             ${product.description}
         </td>
         <td class="price">
-          <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}"/>
           <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
         </td>
       </tr>
