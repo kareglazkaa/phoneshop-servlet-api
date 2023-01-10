@@ -2,10 +2,11 @@ package com.es.phoneshop.model.product;
 
 import com.es.phoneshop.enums.SortField;
 import com.es.phoneshop.enums.SortOrder;
-import com.es.phoneshop.web.DemoDataServletContextListener;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ArrayList;
+
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
@@ -13,6 +14,7 @@ public class ArrayListProductDao implements ProductDao {
     private List<Product> products;
     private Long maxId= Long.valueOf(0);
     private Object lock=new Object();
+
     public static ProductDao getInstance(){
         if(instance==null) {
             instance = new ArrayListProductDao();
@@ -36,8 +38,7 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public List<Product> findProducts(String query, SortField sortFiled, SortOrder sortOrder) {
         synchronized (lock) {
-
-            Comparator<Product> comparatorFiled=Comparator.comparing( product -> {
+            Comparator<Product> comparatorFiled=Comparator.comparing(product -> {
                 if (SortField.description == sortFiled)
                     return (Comparable) product.getDescription();
                 else if(SortField.price==sortFiled)
@@ -47,7 +48,7 @@ public class ArrayListProductDao implements ProductDao {
 
             });
 
-            if(query!=null || !query.isEmpty()){
+            if(query!=null && !query.isEmpty()){
                 comparatorFiled=comparatorFiled.reversed();
             }
             if(SortOrder.desc==sortOrder){
