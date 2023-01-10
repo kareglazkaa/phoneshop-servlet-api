@@ -31,8 +31,6 @@ public class DemoDataServletContextListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
 
     }
-
-
     private void setSampleProducts(){
         Currency usd = Currency.getInstance("USD");
         List<PriceHistory> priceHistoryList1=
