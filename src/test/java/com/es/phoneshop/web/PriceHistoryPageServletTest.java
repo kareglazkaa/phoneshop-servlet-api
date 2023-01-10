@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PriceHistoryPageServletTest {
+public class    PriceHistoryPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
