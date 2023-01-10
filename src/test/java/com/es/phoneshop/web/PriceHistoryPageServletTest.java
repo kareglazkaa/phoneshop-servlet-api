@@ -1,5 +1,7 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.ProductDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,17 +33,25 @@ public class PriceHistoryPageServletTest {
     @Mock
     private ServletConfig config;
     private PriceHistoryPageServlet servlet = new PriceHistoryPageServlet();
+    private DemoDataServletContextListener demo=new DemoDataServletContextListener();
+
 
     @Before
     public void setup() throws ServletException {
         servlet.init(config);
+
+        demo.setSampleProducts();
+
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(request.getPathInfo()).thenReturn("/0");
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
-        //servlet.doGet(request, response);
-        //verify(requestDispatcher).forward(request, response);
-        //verify(request).setAttribute(eq("product"),any());
+
+        servlet.doGet(request, response);
+
+        verify(requestDispatcher).forward(request, response);
+        verify(request).setAttribute(eq("product"),any());
     }
 }
