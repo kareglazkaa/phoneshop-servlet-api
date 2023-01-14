@@ -6,8 +6,22 @@
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="Product List">
     <p>
+        Cart: ${cart}
+    </p>
+    <c:if test="${not empty message}">
+        <div class="success">
+                ${message}
+        </div>
+    </c:if>
+    <c:if test="${not empty error}">
+        <div class="error">
+             There was an error to adding to cart
+        </div>
+    </c:if>
+    <p>
        ${product.description}
     </p>
+    <form method="post">
     <table>
         <thead>
         <tr>
@@ -23,16 +37,29 @@
             </td>
         </tr>
         <tr>
-            <td>price</td>
-            <td>
-                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-            </td>
-        </tr>
-        <tr>
             <td>stock</td>
             <td>
                ${product.stock}
             </td>
         </tr>
+        <tr>
+            <td>price</td>
+            <td class="price">
+                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>quantity</td>
+            <td>
+                <input name="quantity" value="${ not empty error? param.quantity:1 }" class="quantity" >
+            <c:if test="${not empty error}">
+                <div class="error">
+                        ${error}
+                </div>
+            </c:if>
+        </td>
+        </tr>
     </table>
+        <button>Add to cart</button>
+    </form>
 </tags:master>
