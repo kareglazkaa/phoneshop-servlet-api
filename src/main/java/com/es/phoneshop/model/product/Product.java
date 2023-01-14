@@ -9,20 +9,18 @@ public class Product {
     private Long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
     private BigDecimal price;
-    /** can be null if the price is null */
     private Currency currency;
     private int stock;
     private String imageUrl;
-    private List<PriceHistory> priceHistoryList;
+    private List<PriceHistory> histories = new ArrayList<>();
+    ;
 
     public Product() {
-        priceHistoryList=new ArrayList<>();
     }
 
-    public Product(Long id, String code, String description,
-                   BigDecimal price, Currency currency, int stock, String imageUrl) {
+    public Product(Long id, String code, String description, BigDecimal price,
+                   Currency currency, int stock, String imageUrl) {
         this.id = id;
         this.code = code;
         this.description = description;
@@ -30,11 +28,20 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
-
-        priceHistoryList=new ArrayList<>();
     }
+
     public Product(String code, String description, BigDecimal price, Currency currency,
-                   int stock, String imageUrl,List<PriceHistory> priceHistoryList) {
+                   int stock, String imageUrl, List<PriceHistory> priceHistory) {
+        this(null, code, description, price, currency, stock, imageUrl, priceHistory);
+    }
+
+    public Product(String code, String description, BigDecimal price,
+                   Currency currency, int stock, String imageUrl) {
+        this(null, code, description, price, currency, stock, imageUrl, null);
+    }
+
+    public Product(Long id, String code, String description, BigDecimal price, Currency currency,
+                   int stock, String imageUrl, List<PriceHistory> priceHistory) {
         this.id = id;
         this.code = code;
         this.description = description;
@@ -42,17 +49,8 @@ public class Product {
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
-        this.priceHistoryList=priceHistoryList;
+        this.histories = priceHistory;
     }
-    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.code = code;
-        this.description = description;
-        this.price = price;
-        this.currency = currency;
-        this.stock = stock;
-        this.imageUrl = imageUrl;
-    }
-
 
     public Long getId() {
         return id;
@@ -110,11 +108,11 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public List<PriceHistory> getPriceHistoryList() {
-        return priceHistoryList;
+    public List<PriceHistory> getPriceHistory() {
+        return histories;
     }
 
-    public void setPriceHistoryList(List<PriceHistory> priceHistory) {
-        this.priceHistoryList = priceHistory;
+    public void setPriceHistory(List<PriceHistory> priceHistory) {
+        this.histories = priceHistory;
     }
 }

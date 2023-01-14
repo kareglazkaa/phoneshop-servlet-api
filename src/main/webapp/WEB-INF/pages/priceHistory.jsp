@@ -17,7 +17,7 @@
             <th>Start date</th>
             <th>Price</th>
         </tr>
-    <c:forEach var="priceHistory" items="${product.priceHistoryList}">
+    <c:forEach var="priceHistory" items="${product.priceHistory}">
         <tr>
             <div border:none="0">
             <td>${priceHistory.date}</td>

@@ -36,7 +36,7 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testFindProductsNoResults() {
-        assertFalse(productDao.findProducts(query, SortField.price, SortOrder.desc).isEmpty());
+        assertFalse(productDao.findProducts(query, SortField.PRICE, SortOrder.DESC).isEmpty());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class ArrayListProductDaoTest
     @Test
     public void deleteProductTest() throws ProductNotFoundException {
         productDao.delete(product.getId());
-        List<Product> products=productDao.findProducts(query, SortField.price, SortOrder.desc).
+        List<Product> products=productDao.findProducts(query, SortField.PRICE, SortOrder.DESC).
                 stream().
                 filter(prd->product.getId().equals(prd.getId())).
                 collect(Collectors.toList());
@@ -65,7 +65,7 @@ public class ArrayListProductDaoTest
 
     @Test
     public void findProductsTest(){
-        List<Product> products=productDao.findProducts(query, SortField.price, SortOrder.desc);
+        List<Product> products=productDao.findProducts(query, SortField.PRICE, SortOrder.DESC);
         assertTrue(products.stream().
                 filter(prd->prd.getPrice()==null || prd.getStock()<0).
                 collect(Collectors.toList()).

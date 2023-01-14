@@ -13,15 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.anyString;
-
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PriceHistoryPageServletTest {
+public class ProductDetailsPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -30,9 +27,9 @@ public class PriceHistoryPageServletTest {
     private RequestDispatcher requestDispatcher;
     @Mock
     private ServletConfig config;
-    private PriceHistoryPageServlet servlet = new PriceHistoryPageServlet();
-    private DemoDataServletContextListener demo=new DemoDataServletContextListener();
 
+    private ProductDetailsPageServlet servlet=new ProductDetailsPageServlet();
+    private DemoDataServletContextListener demo=new DemoDataServletContextListener();
 
     @Before
     public void setup() throws ServletException {
@@ -45,11 +42,11 @@ public class PriceHistoryPageServletTest {
     }
 
     @Test
-    public void testDoGet() throws ServletException, IOException {
+    public void testDoGet() throws ServletException,IOException{
+        servlet.doGet(request,response);
 
-        servlet.doGet(request, response);
-
-        verify(requestDispatcher).forward(request, response);
+        verify(requestDispatcher).forward(request,response);
         verify(request).setAttribute(eq("product"),any());
     }
+
 }

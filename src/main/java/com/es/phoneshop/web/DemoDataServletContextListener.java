@@ -8,6 +8,7 @@ import com.es.phoneshop.model.product.ProductDao;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
@@ -35,15 +36,15 @@ public class DemoDataServletContextListener implements ServletContextListener {
         Currency usd = Currency.getInstance("USD");
         List<PriceHistory> priceHistoryList1=
                new ArrayList<PriceHistory>(){{
-                    add(new PriceHistory("16 Jun 2020",new BigDecimal(50)));
-                    add(new PriceHistory("22 Aug 2022",new BigDecimal(60)));
-                    add(new PriceHistory("10 Jan 2023",new BigDecimal(100)));
+                    add(new PriceHistory(LocalDate.parse("2020-11-12"),new BigDecimal(50)));
+                    add(new PriceHistory(LocalDate.parse("2021-10-20"),new BigDecimal(60)));
+                    add(new PriceHistory(LocalDate.parse("2022-03-05"),new BigDecimal(100)));
         }};
         List<PriceHistory> priceHistoryList2=
                 new ArrayList<PriceHistory>(){{
-                    add(new PriceHistory("20 Jul 2021",new BigDecimal(550)));
-                    add(new PriceHistory("30 Sep 2022",new BigDecimal(680)));
-                    add(new PriceHistory("22 Dec 2022",new BigDecimal(1000)));
+                    add(new PriceHistory(LocalDate.parse("2021-07-17"),new BigDecimal(550)));
+                    add(new PriceHistory(LocalDate.parse("2022-11-29"),new BigDecimal(680)));
+                    add(new PriceHistory(LocalDate.parse("2023-01-10"),new BigDecimal(1000)));
                 }};
 
         productDao.save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg",priceHistoryList1));

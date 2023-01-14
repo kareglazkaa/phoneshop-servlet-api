@@ -3,6 +3,7 @@ package com.es.phoneshop.model.product;
 import com.es.phoneshop.enums.SortField;
 import com.es.phoneshop.enums.SortOrder;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
@@ -10,21 +11,14 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
-    private static ProductDao instance;
-    private List<Product> products;
+    private static ProductDao instance=new ArrayListProductDao();
+    private List<Product> products =new ArrayList<>();;
     private Long maxId= Long.valueOf(0);
     private Object lock=new Object();
-
+    private ArrayListProductDao(){}
     public static ProductDao getInstance(){
-        if(instance==null) {
-            instance = new ArrayListProductDao();
-        }
         return instance;
     }
-    private ArrayListProductDao(){
-        products=new ArrayList<>();
-    }
-
     @Override
     public Product getProduct(Long id)  {
         synchronized (lock) {
@@ -39,19 +33,18 @@ public class ArrayListProductDao implements ProductDao {
     public List<Product> findProducts(String query, SortField sortFiled, SortOrder sortOrder) {
         synchronized (lock) {
             Comparator<Product> comparatorFiled=Comparator.comparing(product -> {
-                if (SortField.description == sortFiled)
+                if (SortField.DESCRIPTION == sortFiled)
                     return (Comparable) product.getDescription();
-                else if(SortField.price==sortFiled)
+                else if (SortField.PRICE==sortFiled)
                     return (Comparable) product.getPrice();
                 else
                     return (Comparable) containsQuery(query, product.getDescription());
-
             });
 
             if(query!=null && !query.isEmpty()){
                 comparatorFiled=comparatorFiled.reversed();
             }
-            if(SortOrder.desc==sortOrder){
+            if(SortOrder.DESC==sortOrder){
                 comparatorFiled=comparatorFiled.reversed();
             }
 
@@ -64,17 +57,11 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-    public Integer containsQuery(String query,String productDescription){
-        int count = 0;
-        if(query!=null && !query.isEmpty()) {
-            String[] words = query.split(" ");
-            for (String word : words) {
-                if (productDescription.contains(word))
-                    count++;
-            }
-        }
-        return count;
+    public Long containsQuery(String query,String productDescription){
 
+        return Arrays.stream(query.split(" "))
+                    .filter(productDescription::contains)
+                    .count();
     }
 
     @Override
