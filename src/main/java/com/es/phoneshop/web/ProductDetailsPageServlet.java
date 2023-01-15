@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 @WebServlet(name = "ProductDetailsPageServlet", value = "/ProductDetailsPageServlet")
 public class ProductDetailsPageServlet extends HttpServlet {
@@ -25,31 +27,32 @@ public class ProductDetailsPageServlet extends HttpServlet {
         try {
             productId=parseProductId(request);
             request.setAttribute("product",productDao.getProduct(productId));
-            request.setAttribute("cart",cartService.getCart());
+            request.setAttribute("cart",cartService.getCart(request));
             request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
         }
         catch (ProductNotFoundException | NumberFormatException ex){
             response.sendError(404,"Product "+productId+" not found");
         }
-
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String quantityString=request.getParameter("quantity");
+
         Long productId=parseProductId(request);
 
         int quantity;
         try {
-            quantity = Integer.valueOf(quantityString);
-        }catch (NumberFormatException e) {
+            NumberFormat format=NumberFormat.getInstance(request.getLocale());
+            quantity = format.parse(quantityString).intValue();
+
+        }catch (ParseException e) {
             request.setAttribute("error","Not a number");
             doGet(request,response);
             return;
         }
-
         try {
-            cartService.add(productId,quantity);
+            cartService.add(cartService.getCart(request),productId,quantity);
         }
         catch (OutOfStockException e){
             request.setAttribute("error","Out of stock, available "+e.getStockAvailable());
