@@ -14,7 +14,6 @@ public class OutOfStockException extends Exception {
         this.stockAvailable=stockAvailable;
     }
 
-
     public Product getProduct() {
         return product;
     }

@@ -14,11 +14,9 @@ import java.util.Currency;
 import java.util.List;
 
 public class DemoDataServletContextListener implements ServletContextListener {
-    private ProductDao productDao;
+    private ProductDao productDao=ArrayListProductDao.getINSTANCE();;
 
-    public DemoDataServletContextListener(){
-        productDao=ArrayListProductDao.getInstance();
-    }
+    public DemoDataServletContextListener(){}
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         boolean insertDemoData=Boolean.valueOf(servletContextEvent
@@ -29,9 +27,7 @@ public class DemoDataServletContextListener implements ServletContextListener {
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
-    }
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {}
     public void setSampleProducts(){
         Currency usd = Currency.getInstance("USD");
         List<PriceHistory> priceHistoryList1=

@@ -16,9 +16,11 @@ public class ArrayListProductDao implements ProductDao {
     private Long maxId= Long.valueOf(0);
     private Object lock=new Object();
     private ArrayListProductDao(){}
-    public static ProductDao getInstance(){
+
+    public static ProductDao getINSTANCE() {
         return INSTANCE;
     }
+
     @Override
     public Product getProduct(Long id)  {
         synchronized (lock) {
@@ -47,7 +49,6 @@ public class ArrayListProductDao implements ProductDao {
             if(SortOrder.DESC==sortOrder){
                 comparatorFiled=comparatorFiled.reversed();
             }
-
             return products.stream()
                     .filter(product -> query.isEmpty() || containsQuery(query,product.getDescription())!=0)
                     .filter(product -> product.getPrice()!=null)

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class DefaultCartService implements CartService{
-    private ProductDao productDao= ArrayListProductDao.getInstance();
+    private ProductDao productDao= ArrayListProductDao.getINSTANCE();
     private Object lock=new Object();
     private static final String CART_SESSION_ATTRIBUTE=
             DefaultCartService.class.getName()+".cart";
@@ -26,13 +26,11 @@ public class DefaultCartService implements CartService{
         synchronized (lock) {
             Cart cart = (Cart) request.getSession().getAttribute(CART_SESSION_ATTRIBUTE);
             if (cart == null) {
-                cart = new Cart();
-                request.getSession().setAttribute(CART_SESSION_ATTRIBUTE, cart);
+                request.getSession().setAttribute(CART_SESSION_ATTRIBUTE, cart = new Cart());
             }
             return cart;
         }
     }
-
 
     @Override
     public void add(Cart cart,Long productId, int quantity)throws OutOfStockException {

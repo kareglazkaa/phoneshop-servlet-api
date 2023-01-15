@@ -1,10 +1,10 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.searchHistory.SearchHistory;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.DefaultCartService;
 import com.es.phoneshop.model.cart.OutOfStockException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductNotFoundException;
 
@@ -19,26 +19,30 @@ import java.text.ParseException;
 
 @WebServlet(name = "ProductDetailsPageServlet", value = "/ProductDetailsPageServlet")
 public class ProductDetailsPageServlet extends HttpServlet {
-    private ProductDao productDao= ArrayListProductDao.getInstance();
+    private ProductDao productDao= ArrayListProductDao.getINSTANCE();
     private CartService cartService= DefaultCartService.getINSTANCE();
+    private SearchHistory searchHistory=SearchHistory.getINSTANCE();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long productId = null;
+        Long productId =  productId = parseProductId(request);
         try {
-            productId=parseProductId(request);
-            request.setAttribute("product",productDao.getProduct(productId));
-            request.setAttribute("cart",cartService.getCart(request));
-            request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
+            searchHistory.addRecentProduct(searchHistory.getProducts(request), productDao.getProduct(productId));
         }
-        catch (ProductNotFoundException | NumberFormatException ex){
+        catch (ProductNotFoundException e){
             response.sendError(404,"Product "+productId+" not found");
         }
+
+        request.setAttribute("product",productDao.getProduct(productId));
+        request.setAttribute("cart",cartService.getCart(request));
+        request.setAttribute("searchHistory",searchHistory.getProducts(request));
+
+        request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String quantityString=request.getParameter("quantity");
-
         Long productId=parseProductId(request);
 
         int quantity;
@@ -51,6 +55,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
             doGet(request,response);
             return;
         }
+
         try {
             cartService.add(cartService.getCart(request),productId,quantity);
         }
