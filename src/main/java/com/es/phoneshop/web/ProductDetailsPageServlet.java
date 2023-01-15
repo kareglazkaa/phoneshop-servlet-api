@@ -38,19 +38,26 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String quantityString=request.getParameter("quantity");
         Long productId=parseProductId(request);
+
         int quantity;
         try {
-            quantity =Integer.valueOf(quantityString);
-            cartService.add(productId,quantity);
-            request.setAttribute("message","Product added to cart");
-
-        } catch (NumberFormatException e) {
+            quantity = Integer.valueOf(quantityString);
+        }catch (NumberFormatException e) {
             request.setAttribute("error","Not a number");
+            doGet(request,response);
+            return;
+        }
+
+        try {
+            cartService.add(productId,quantity);
         }
         catch (OutOfStockException e){
             request.setAttribute("error","Out of stock, available "+e.getStockAvailable());
+            doGet(request,response);
+            return;
         }
-        doGet(request,response);
+
+        response.sendRedirect(request.getContextPath()+"/products/"+productId+"?message=Product added to cart");
     }
 
     private Long parseProductId(HttpServletRequest request) {
