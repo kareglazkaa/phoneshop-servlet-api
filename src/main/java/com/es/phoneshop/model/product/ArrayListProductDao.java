@@ -11,14 +11,16 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
-    private static ProductDao instance=new ArrayListProductDao();
+    private static final ProductDao INSTANCE =new ArrayListProductDao();
     private List<Product> products =new ArrayList<>();;
     private Long maxId= Long.valueOf(0);
     private Object lock=new Object();
     private ArrayListProductDao(){}
-    public static ProductDao getInstance(){
-        return instance;
+
+    public static ProductDao getINSTANCE() {
+        return INSTANCE;
     }
+
     @Override
     public Product getProduct(Long id)  {
         synchronized (lock) {
@@ -41,15 +43,14 @@ public class ArrayListProductDao implements ProductDao {
                     return (Comparable) containsQuery(query, product.getDescription());
             });
 
-            if(query!=null && !query.isEmpty()){
+            if(!query.isEmpty()){
                 comparatorFiled=comparatorFiled.reversed();
             }
             if(SortOrder.DESC==sortOrder){
                 comparatorFiled=comparatorFiled.reversed();
             }
-
             return products.stream()
-                    .filter(product -> query == null || query.isEmpty() || containsQuery(query,product.getDescription())!=0)
+                    .filter(product -> query.isEmpty() || containsQuery(query,product.getDescription())!=0)
                     .filter(product -> product.getPrice()!=null)
                     .filter(product -> product.getStock()>0)
                     .sorted(comparatorFiled)
@@ -58,10 +59,9 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     public Long containsQuery(String query,String productDescription){
-
         return Arrays.stream(query.split(" "))
-                    .filter(productDescription::contains)
-                    .count();
+                .filter(productDescription::contains)
+                .count();
     }
 
     @Override

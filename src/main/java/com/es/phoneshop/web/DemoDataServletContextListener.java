@@ -14,11 +14,9 @@ import java.util.Currency;
 import java.util.List;
 
 public class DemoDataServletContextListener implements ServletContextListener {
-    private ProductDao productDao;
+    private ProductDao productDao=ArrayListProductDao.getINSTANCE();;
 
-    public DemoDataServletContextListener(){
-        productDao=ArrayListProductDao.getInstance();
-    }
+    public DemoDataServletContextListener(){}
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         boolean insertDemoData=Boolean.valueOf(servletContextEvent
@@ -29,17 +27,15 @@ public class DemoDataServletContextListener implements ServletContextListener {
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
-    }
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {}
     public void setSampleProducts(){
         Currency usd = Currency.getInstance("USD");
         List<PriceHistory> priceHistoryList1=
-               new ArrayList<PriceHistory>(){{
+                new ArrayList<PriceHistory>(){{
                     add(new PriceHistory(LocalDate.parse("2020-11-12"),new BigDecimal(50)));
                     add(new PriceHistory(LocalDate.parse("2021-10-20"),new BigDecimal(60)));
                     add(new PriceHistory(LocalDate.parse("2022-03-05"),new BigDecimal(100)));
-        }};
+                }};
         List<PriceHistory> priceHistoryList2=
                 new ArrayList<PriceHistory>(){{
                     add(new PriceHistory(LocalDate.parse("2021-07-17"),new BigDecimal(550)));
