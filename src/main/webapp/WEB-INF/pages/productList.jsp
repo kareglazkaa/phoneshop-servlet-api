@@ -6,65 +6,65 @@
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
 <jsp:useBean id="searchHistory" type="java.util.ArrayList" scope="request"/>
 <tags:master pageTitle="Product List">
-  <p>
-    Welcome to Expert-Soft training!
-  </p>
-  <form>
-    <input name="query" value="${param.query}">
-    <button>Search</button>
-  </form>
+    <p>
+        Welcome to Expert-Soft training!
+    </p>
+    <form>
+        <input name="query" value="${param.query}">
+        <button>Search</button>
+    </form>
 
-  <table>
-    <thead>
-    <tr>
-      <td>Image</td>
-      <td>
-        Description
-        <tags:sortLink sort="DESCRIPTION" order="ASC"></tags:sortLink>
-        <tags:sortLink sort="DESCRIPTION" order="DESC"></tags:sortLink>
-      </td>
-      <td class="price">
-        Price
-        <tags:sortLink sort="PRICE" order="ASC"></tags:sortLink>
-        <tags:sortLink sort="PRICE" order="DESC"></tags:sortLink>
-      </td>
-    </tr>
-    </thead>
-    <c:forEach var="product" items="${products}">
-      <tr>
-        <td>
-          <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
-        </td>
-        <td>
-          <a href="${pageContext.servletContext.contextPath}/products/${product.id}"/>
-            ${product.description}
-        </td>
-        <td class="price">
-          <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}"/>
-          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-        </td>
-      </tr>
-    </c:forEach>
-  </table>
+    <table>
+        <thead>
+        <tr>
+            <td>Image</td>
+            <td>
+                Description
+                <tags:sortLink sort="DESCRIPTION" order="ASC"></tags:sortLink>
+                <tags:sortLink sort="DESCRIPTION" order="DESC"></tags:sortLink>
+            </td>
+            <td class="price">
+                Price
+                <tags:sortLink sort="PRICE" order="ASC"></tags:sortLink>
+                <tags:sortLink sort="PRICE" order="DESC"></tags:sortLink>
+            </td>
+        </tr>
+        </thead>
+        <c:forEach var="product" items="${products}">
+            <tr>
+                <td>
+                    <img class="product-tile" src="${product.imageUrl}">
+                </td>
+                <td>
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}"/>
+                        ${product.description}
+                </td>
+                <td class="price">
+                    <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}"/>
+                    <fmt:formatNumber value="${product.price}" type="currency"
+                                      currencySymbol="${product.currency.symbol}"/>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
 
 
-  <table>
-    <h3>Recently viewed</h3>
-    <c:forEach var="product" items="${searchHistory}">
-      <td>
-        <p class="info">
-          <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
-        </p>
-        <p class="info">
-          <a href="${pageContext.servletContext.contextPath}/products/${product.id}"/>
-            ${product.description}
-        </p>
-        <p class="info">
-          <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}"/>
-          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-        </p>
-      </td>
-    </c:forEach>
-  </table>
+    <table>
+        <h3>Recently viewed</h3>
+        <c:forEach var="product" items="${searchHistory}">
+            <td>
+                <p class="info">
+                    <img class="product-tile" src="${product.imageUrl}">
+                </p>
+                <p class="info">
+                    <a href="${pageContext.servletContext.contextPath}/products/${product.id}"/>
+                        ${product.description}
+                    <a href="${pageContext.servletContext.contextPath}/products/priceHistory/${product.id}"/>
+                    <fmt:formatNumber value="${product.price}" type="currency"
+                                      currencySymbol="${product.currency.symbol}"/>
+                </p>
+            </td>
+        </c:forEach>
+    </table>
 
 </tags:master>

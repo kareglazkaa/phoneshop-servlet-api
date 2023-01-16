@@ -8,19 +8,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class SearchHistory {
-    private static final SearchHistory INSTANCE = new SearchHistory();
+public class SearchHistoryService {
+    private static final SearchHistoryService INSTANCE = new SearchHistoryService();
 
-    private static final String SEARCH_HISTORY_SESSION_ATTRIBUTE=
-                SearchHistory.class.getName()+".products";
-    private Object lock=new Object();
-    private SearchHistory() {}
+    private static final String SEARCH_HISTORY_SESSION_ATTRIBUTE =
+            SearchHistoryService.class.getName() + ".products";
+    private Object lock = new Object();
 
-    public static SearchHistory getINSTANCE() {
+    private SearchHistoryService() {
+    }
+
+    public static SearchHistoryService getINSTANCE() {
         return INSTANCE;
     }
 
-    public void addRecentProduct(List<Product> products,Product product) {
+    public void addRecentProduct(List<Product> products, Product product) {
         synchronized (lock) {
             int index = productContains(products, product.getId());
             if (index != -1) {
@@ -44,7 +46,7 @@ public class SearchHistory {
         }
     }
 
-    private int productContains(List<Product> products,Long productId) {
+    private int productContains(List<Product> products, Long productId) {
         synchronized (lock) {
             int size = products.size();
             return IntStream.range(0, size)
@@ -53,4 +55,5 @@ public class SearchHistory {
                     .orElse(-1);
         }
     }
+
 }

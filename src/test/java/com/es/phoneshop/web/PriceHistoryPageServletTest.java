@@ -31,7 +31,7 @@ public class PriceHistoryPageServletTest {
     @Mock
     private ServletConfig config;
     private PriceHistoryPageServlet servlet = new PriceHistoryPageServlet();
-    private DemoDataServletContextListener demo=new DemoDataServletContextListener();
+    private DemoDataServletContextListener demo = new DemoDataServletContextListener();
 
 
     @Before
@@ -50,6 +50,6 @@ public class PriceHistoryPageServletTest {
         servlet.doGet(request, response);
 
         verify(requestDispatcher).forward(request, response);
-        verify(request).setAttribute(eq("product"),any());
+        verify(request).setAttribute(eq("product"), any());
     }
 }

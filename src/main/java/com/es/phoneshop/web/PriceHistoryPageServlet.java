@@ -13,16 +13,16 @@ import java.io.IOException;
 
 @WebServlet(name = "PriceHistoryPageServlet", value = "/PriceHistoryPageServlet")
 public class PriceHistoryPageServlet extends HttpServlet {
-    private ProductDao productDao= ArrayListProductDao.getINSTANCE();
+    private ProductDao productDao = ArrayListProductDao.getINSTANCE();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String productId = request.getPathInfo().substring(1);
         try {
-            request.setAttribute("product",productDao.getProduct(Long.valueOf(productId)));
+            request.setAttribute("product", productDao.getProduct(Long.valueOf(productId)));
             request.getRequestDispatcher("/WEB-INF/pages/priceHistory.jsp").forward(request, response);
-        }
-        catch (ProductNotFoundException | NumberFormatException ex){
-            response.sendError(404,"Product "+productId+" not found");
+        } catch (ProductNotFoundException | NumberFormatException ex) {
+            response.sendError(404, "Product " + productId + " not found");
         }
     }
 }

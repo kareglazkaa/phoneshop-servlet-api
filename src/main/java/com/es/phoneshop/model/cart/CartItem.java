@@ -6,9 +6,9 @@ public class CartItem {
     private Product product;
     private int quantity;
 
-    public CartItem(Product product,int quantity) {
+    public CartItem(Product product, int quantity) {
         this.product = product;
-        this.quantity=quantity;
+        this.quantity = quantity;
     }
 
     public Product getProduct() {
@@ -19,12 +19,12 @@ public class CartItem {
         return quantity;
     }
 
-    public void increaseQuantity(int quantity) {
-        this.quantity += quantity;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     @Override
     public String toString() {
-        return product.getCode()+", "+quantity;
+        return product.getCode() + ", " + quantity;
     }
 }

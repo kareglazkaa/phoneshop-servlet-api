@@ -7,11 +7,10 @@ public class OutOfStockException extends Exception {
     private int stockRequested;
     private int stockAvailable;
 
-    public OutOfStockException(Product product,
-                               int stockRequested,int stockAvailable){
-        this.product=product;
-        this.stockRequested=stockRequested;
-        this.stockAvailable=stockAvailable;
+    public OutOfStockException(Product product, int stockRequested, int stockAvailable) {
+        this.product = product;
+        this.stockRequested = stockRequested;
+        this.stockAvailable = stockAvailable;
     }
 
     public Product getProduct() {

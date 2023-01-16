@@ -11,18 +11,21 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
-    private static final ProductDao INSTANCE =new ArrayListProductDao();
-    private List<Product> products =new ArrayList<>();;
-    private Long maxId= Long.valueOf(0);
-    private Object lock=new Object();
-    private ArrayListProductDao(){}
+    private static final ProductDao INSTANCE = new ArrayListProductDao();
+    private List<Product> products = new ArrayList<>();
+
+    private Long maxId = Long.valueOf(0);
+    private Object lock = new Object();
+
+    private ArrayListProductDao() {
+    }
 
     public static ProductDao getINSTANCE() {
         return INSTANCE;
     }
 
     @Override
-    public Product getProduct(Long id)  {
+    public Product getProduct(Long id) {
         synchronized (lock) {
             return products.stream().
                     filter(product -> id.equals(product.getId())).
@@ -34,31 +37,31 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public List<Product> findProducts(String query, SortField sortFiled, SortOrder sortOrder) {
         synchronized (lock) {
-            Comparator<Product> comparatorFiled=Comparator.comparing(product -> {
+            Comparator<Product> comparatorFiled = Comparator.comparing(product -> {
                 if (SortField.DESCRIPTION == sortFiled)
                     return (Comparable) product.getDescription();
-                else if (SortField.PRICE==sortFiled)
+                else if (SortField.PRICE == sortFiled)
                     return (Comparable) product.getPrice();
                 else
                     return (Comparable) containsQuery(query, product.getDescription());
             });
 
-            if(!query.isEmpty()){
-                comparatorFiled=comparatorFiled.reversed();
+            if (!query.isEmpty()) {
+                comparatorFiled = comparatorFiled.reversed();
             }
-            if(SortOrder.DESC==sortOrder){
-                comparatorFiled=comparatorFiled.reversed();
+            if (SortOrder.DESC == sortOrder) {
+                comparatorFiled = comparatorFiled.reversed();
             }
             return products.stream()
-                    .filter(product -> query.isEmpty() || containsQuery(query,product.getDescription())!=0)
-                    .filter(product -> product.getPrice()!=null)
-                    .filter(product -> product.getStock()>0)
+                    .filter(product -> query.isEmpty() || containsQuery(query, product.getDescription()) != 0)
+                    .filter(product -> product.getPrice() != null)
+                    .filter(product -> product.getStock() > 0)
                     .sorted(comparatorFiled)
                     .collect(Collectors.toList());
         }
     }
 
-    public Long containsQuery(String query,String productDescription){
+    public Long containsQuery(String query, String productDescription) {
         return Arrays.stream(query.split(" "))
                 .filter(productDescription::contains)
                 .count();
