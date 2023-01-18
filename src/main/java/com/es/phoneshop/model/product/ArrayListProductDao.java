@@ -8,13 +8,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
     private static final ProductDao INSTANCE = new ArrayListProductDao();
     private List<Product> products = new ArrayList<>();
-
-    private Long maxId = Long.valueOf(0);
+    private AtomicLong maxId = new AtomicLong();
     private Object lock = new Object();
 
     private ArrayListProductDao() {
@@ -27,10 +27,10 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public Product getProduct(Long id) {
         synchronized (lock) {
-            return products.stream().
-                    filter(product -> id.equals(product.getId())).
-                    findAny().
-                    orElseThrow(() -> new ProductNotFoundException());
+            return products.stream()
+                    .filter(product -> id.equals(product.getId()))
+                    .findAny()
+                    .orElseThrow(() -> new ProductNotFoundException());
         }
     }
 
@@ -52,8 +52,8 @@ public class ArrayListProductDao implements ProductDao {
             if (SortOrder.DESC == sortOrder) {
                 comparatorFiled = comparatorFiled.reversed();
             }
-            return products.stream()
-                    .filter(product -> query.isEmpty() || containsQuery(query, product.getDescription()) != 0)
+            return products.stream().
+                    filter(product -> query.isEmpty() || containsQuery(query, product.getDescription()) != 0)
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
                     .sorted(comparatorFiled)
@@ -61,7 +61,7 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-    public Long containsQuery(String query, String productDescription) {
+    private Long containsQuery(String query, String productDescription) {
         return Arrays.stream(query.split(" "))
                 .filter(productDescription::contains)
                 .count();
@@ -79,7 +79,7 @@ public class ArrayListProductDao implements ProductDao {
                     }
                 }
             } else {
-                product.setId(maxId++);
+                product.setId(maxId.getAndIncrement());
                 products.add(product);
             }
         }
@@ -92,6 +92,7 @@ public class ArrayListProductDao implements ProductDao {
                     .filter(product -> id.equals(product.getId()))
                     .findAny()
                     .orElseThrow(() -> new ProductNotFoundException());
+
             products.remove(productToDelete);
         }
     }

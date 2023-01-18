@@ -2,7 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.enums.SortField;
 import com.es.phoneshop.enums.SortOrder;
-import com.es.phoneshop.model.searchHistory.SearchHistoryService;
+import com.es.phoneshop.model.searchHistory.SearchHistoryServiceImpl;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
 
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
     private ProductDao productDao = ArrayListProductDao.getINSTANCE();
-    private SearchHistoryService searchHistoryService = SearchHistoryService.getINSTANCE();
+    private SearchHistoryServiceImpl searchHistoryServiceImpl = SearchHistoryServiceImpl.getINSTANCE();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -23,7 +23,7 @@ public class ProductListPageServlet extends HttpServlet {
         String sortFiled = request.getParameter("sort");
         String sortOrder = request.getParameter("order");
 
-        request.setAttribute("searchHistory", searchHistoryService.getProducts(request));
+        request.setAttribute("searchHistory", searchHistoryServiceImpl.getSearchHistory(request).getProducts());
         request.setAttribute("products",
                 productDao.findProducts(
                         Optional.ofNullable(query).map(String::valueOf).orElse(""),

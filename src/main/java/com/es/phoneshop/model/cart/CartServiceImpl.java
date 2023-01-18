@@ -8,18 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class DefaultCartService implements CartService {
+public class CartServiceImpl implements CartService {
     private ProductDao productDao = ArrayListProductDao.getINSTANCE();
     private Object lock = new Object();
     private static final String CART_SESSION_ATTRIBUTE =
-            DefaultCartService.class.getName() + ".cart";
-    private static final DefaultCartService INSTANCE =
-            new DefaultCartService();
+            CartServiceImpl.class.getName() + ".cart";
+    private static final CartServiceImpl INSTANCE = new CartServiceImpl();
 
-    private DefaultCartService() {
+    private CartServiceImpl() {
     }
 
-    public static DefaultCartService getINSTANCE() {
+    public static CartServiceImpl getINSTANCE() {
         return INSTANCE;
     }
 
@@ -42,7 +41,7 @@ public class DefaultCartService implements CartService {
             int index = getItemIndex(cart, productId);
 
             if (index != -1 && quantity + cart.getItems().get(index).getQuantity() <= product.getStock()) {
-                increaseCartQuantity(cart, index, quantity);
+                increaseCartQuantity(cart.getItems().get(index), quantity);
             } else if (index == -1 && quantity <= product.getStock()) {
                 cart.getItems().add(new CartItem(product, quantity));
             } else {
@@ -51,11 +50,8 @@ public class DefaultCartService implements CartService {
         }
     }
 
-    @Override
-    public void increaseCartQuantity(Cart cart, int index, int quantity) {
-        CartItem cartItem = cart.getItems().get(index);
+    private void increaseCartQuantity(CartItem cartItem, int quantity) {
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        cart.getItems().set(index, cartItem);
     }
 
     private int getItemIndex(Cart cart, Long productId) {

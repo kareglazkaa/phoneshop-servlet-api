@@ -7,5 +7,4 @@ public interface CartService {
 
     void addItem(Cart cart, Long productId, int quantity) throws OutOfStockException;
 
-    void increaseCartQuantity(Cart cart, int index, int quantity);
 }

@@ -1,8 +1,8 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.searchHistory.SearchHistoryService;
+import com.es.phoneshop.model.searchHistory.SearchHistoryServiceImpl;
 import com.es.phoneshop.model.cart.CartService;
-import com.es.phoneshop.model.cart.DefaultCartService;
+import com.es.phoneshop.model.cart.CartServiceImpl;
 import com.es.phoneshop.model.cart.OutOfStockException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
@@ -20,21 +20,22 @@ import java.text.ParseException;
 @WebServlet(name = "ProductDetailsPageServlet", value = "/ProductDetailsPageServlet")
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao = ArrayListProductDao.getINSTANCE();
-    private CartService cartService = DefaultCartService.getINSTANCE();
-    private SearchHistoryService searchHistoryService = SearchHistoryService.getINSTANCE();
+    private CartService cartService = CartServiceImpl.getINSTANCE();
+    private SearchHistoryServiceImpl searchHistoryServiceImpl = SearchHistoryServiceImpl.getINSTANCE();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long productId = productId = parseProductId(request);
         try {
-            searchHistoryService.addRecentProduct(searchHistoryService.getProducts(request), productDao.getProduct(productId));
+            searchHistoryServiceImpl.addRecentProduct(
+                    searchHistoryServiceImpl.getSearchHistory(request), productDao.getProduct(productId));
         } catch (ProductNotFoundException e) {
             response.sendError(404, "Product " + productId + " not found");
         }
 
         request.setAttribute("product", productDao.getProduct(productId));
         request.setAttribute("cart", cartService.getCart(request));
-        request.setAttribute("searchHistory", searchHistoryService.getProducts(request));
+        request.setAttribute("searchHistory", searchHistoryServiceImpl.getSearchHistory(request).getProducts());
 
         request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
     }

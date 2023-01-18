@@ -18,14 +18,14 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DefaultCartServiceTest {
+public class CartServiceImplTest {
 
     @Mock
     private HttpServletRequest request;
     @Mock
     private HttpSession session;
     private Cart cart;
-    private DefaultCartService cartService = DefaultCartService.getINSTANCE();
+    private CartServiceImpl cartService = CartServiceImpl.getINSTANCE();
     private DemoDataServletContextListener demo = new DemoDataServletContextListener();
 
     @Before
@@ -46,10 +46,16 @@ public class DefaultCartServiceTest {
 
     @Test
     public void addItemTest() throws OutOfStockException {
-        assertNull(cart.getItems().stream().filter(item -> item.getProduct().getId().equals(0L) && item.getQuantity() == 5).findAny().orElse(null));
+        assertNull(cart.getItems().stream()
+                .filter(item -> item.getProduct().getId().equals(0L) && item.getQuantity() == 5)
+                .findAny()
+                .orElse(null));
 
         cartService.addItem(cart, 0L, 5);
-        assertNotNull(cart.getItems().stream().filter(item -> item.getProduct().getId().equals(0L) && item.getQuantity() == 5).findAny().orElse(null));
+        assertNotNull(cart.getItems().stream()
+                .filter(item -> item.getProduct().getId().equals(0L) && item.getQuantity() == 5)
+                .findAny()
+                .orElse(null));
 
 
         cartService.addItem(cart, 0L, 8);
