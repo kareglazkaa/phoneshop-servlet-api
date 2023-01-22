@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @WebServlet(name = "PriceHistoryPageServlet", value = "/PriceHistoryPageServlet")
 public class PriceHistoryPageServlet extends HttpServlet {
-    private ProductDao productDao = ArrayListProductDao.getINSTANCE();
+    private ProductDao productDao = ArrayListProductDao.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
