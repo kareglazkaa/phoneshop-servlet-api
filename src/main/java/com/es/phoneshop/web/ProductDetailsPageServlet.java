@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.error.ErrorHandler;
 import com.es.phoneshop.model.searchHistory.SearchHistoryServiceImpl;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.CartServiceImpl;
@@ -19,13 +20,13 @@ import java.text.ParseException;
 
 @WebServlet(name = "ProductDetailsPageServlet", value = "/ProductDetailsPageServlet")
 public class ProductDetailsPageServlet extends HttpServlet {
-    private ProductDao productDao = ArrayListProductDao.getINSTANCE();
-    private CartService cartService = CartServiceImpl.getINSTANCE();
-    private SearchHistoryServiceImpl searchHistoryServiceImpl = SearchHistoryServiceImpl.getINSTANCE();
+    private ProductDao productDao = ArrayListProductDao.getInstance();
+    private CartService cartService = CartServiceImpl.getInstance();
+    private SearchHistoryServiceImpl searchHistoryServiceImpl = SearchHistoryServiceImpl.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long productId = productId = parseProductId(request);
+        Long productId = parseProductId(request);
         try {
             searchHistoryServiceImpl.addRecentProduct(
                     searchHistoryServiceImpl.getSearchHistory(request), productDao.getProduct(productId));
@@ -34,7 +35,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
         }
 
         request.setAttribute("product", productDao.getProduct(productId));
-        request.setAttribute("cart", cartService.getCart(request));
         request.setAttribute("searchHistory", searchHistoryServiceImpl.getSearchHistory(request).getProducts());
 
         request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
@@ -44,22 +44,11 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String quantityString = request.getParameter("quantity");
         Long productId = parseProductId(request);
-
-        int quantity;
         try {
-            NumberFormat format = NumberFormat.getInstance(request.getLocale());
-            quantity = format.parse(quantityString).intValue();
-
-        } catch (ParseException e) {
-            request.setAttribute("error", "Not a number");
-            doGet(request, response);
-            return;
-        }
-
-        try {
-            cartService.addItem(cartService.getCart(request), productId, quantity);
-        } catch (OutOfStockException e) {
-            request.setAttribute("error", "Out of stock, available " + e.getStockAvailable());
+            int quantity = getQuantity(quantityString, request);
+            cartService.add(cartService.getCart(request.getSession()), productId, quantity);
+        } catch (ParseException | OutOfStockException e) {
+            ErrorHandler.setErrorAttribute(request, e);
             doGet(request, response);
             return;
         }
@@ -70,5 +59,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private Long parseProductId(HttpServletRequest request) {
         String productInfo = request.getPathInfo().substring(1);
         return Long.valueOf(productInfo);
+    }
+
+    private int getQuantity(String quantity, HttpServletRequest request) throws ParseException {
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(request.getLocale());
+        return numberFormat.parse(quantity).intValue();
     }
 }

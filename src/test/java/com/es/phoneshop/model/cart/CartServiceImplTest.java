@@ -25,7 +25,7 @@ public class CartServiceImplTest {
     @Mock
     private HttpSession session;
     private Cart cart;
-    private CartServiceImpl cartService = CartServiceImpl.getINSTANCE();
+    private CartServiceImpl cartService = CartServiceImpl.getInstance();
     private DemoDataServletContextListener demo = new DemoDataServletContextListener();
 
     @Before
@@ -34,13 +34,13 @@ public class CartServiceImplTest {
         when(request.getSession()).thenReturn(session);
 
         demo.setSampleProducts();
-        cart = cartService.getCart(request);
+        cart = cartService.getCart(request.getSession());
     }
 
     @Test
     public void getCartTest() {
         Cart testCart;
-        testCart = cartService.getCart(request);
+        testCart = cartService.getCart(request.getSession());
         assertNotNull(testCart);
     }
 
@@ -51,14 +51,14 @@ public class CartServiceImplTest {
                 .findAny()
                 .orElse(null));
 
-        cartService.addItem(cart, 0L, 5);
+        cartService.add(cart, 0L, 5);
         assertNotNull(cart.getItems().stream()
                 .filter(item -> item.getProduct().getId().equals(0L) && item.getQuantity() == 5)
                 .findAny()
                 .orElse(null));
 
 
-        cartService.addItem(cart, 0L, 8);
+        cartService.add(cart, 0L, 8);
         assertEquals(cart.getItems().stream().filter(item -> item.getProduct().getId().equals(0L) && item.getQuantity() == 8).count(), 0);
         assertEquals(cart.getItems().stream().filter(item -> item.getProduct().getId().equals(0L) && item.getQuantity() == 13).count(), 1);
     }

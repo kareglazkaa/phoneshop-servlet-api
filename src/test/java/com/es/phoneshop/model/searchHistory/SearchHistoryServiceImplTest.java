@@ -27,7 +27,7 @@ public class SearchHistoryServiceImplTest {
 
     private SearchHistoryServiceImpl historyService;
     private DemoDataServletContextListener demo = new DemoDataServletContextListener();
-    private ProductDao productDao = ArrayListProductDao.getINSTANCE();
+    private ProductDao productDao = ArrayListProductDao.getInstance();
     List<Product> products;
 
     @Before
@@ -36,7 +36,7 @@ public class SearchHistoryServiceImplTest {
 
         demo.setSampleProducts();
 
-        historyService = SearchHistoryServiceImpl.getINSTANCE();
+        historyService = SearchHistoryServiceImpl.getInstance();
         products = historyService.getSearchHistory(request).getProducts();
     }
 
