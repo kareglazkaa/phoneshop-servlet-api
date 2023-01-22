@@ -20,7 +20,7 @@ public class ArrayListProductDao implements ProductDao {
     private ArrayListProductDao() {
     }
 
-    public static ProductDao getInstance() {
+    public static ProductDao getINSTANCE() {
         return INSTANCE;
     }
 
