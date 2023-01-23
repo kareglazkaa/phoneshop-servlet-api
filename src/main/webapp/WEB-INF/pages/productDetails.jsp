@@ -23,47 +23,47 @@
     <p>
             ${product.description}
     </p>
-    <form method="post" action="${pageContext.servletContext.contextPath}/products/${product.id}"/>
-    <table>
-        <thead>
-        <tr>
-            <td>Image</td>
-            <td>
-                <img src="${product.imageUrl}">
-            </td>
-        </tr>
-        <tr>
-            <td>code</td>
-            <td>
-                    ${product.code}
-            </td>
-        </tr>
-        <tr>
-            <td>stock</td>
-            <td>
-                    ${product.stock}
-            </td>
-        </tr>
-        <tr>
-            <td>price</td>
-            <td class="price">
-                <fmt:formatNumber value="${product.price}" type="currency"
-                                  currencySymbol="${product.currency.symbol}"/>
-            </td>
-        </tr>
-        <tr>
-            <td>quantity</td>
-            <td>
-                <input name="quantity" value="${ not empty error? param.quantity:1 }" class="quantity">
-                <c:if test="${not empty error}">
-                    <div class="error">
-                            ${error}
-                    </div>
-                </c:if>
-            </td>
-        </tr>
-    </table>
-    <button>Add to cart</button>
+    <form method="post">
+        <table>
+            <thead>
+            <tr>
+                <td>Image</td>
+                <td>
+                    <img src="${product.imageUrl}">
+                </td>
+            </tr>
+            <tr>
+                <td>code</td>
+                <td>
+                        ${product.code}
+                </td>
+            </tr>
+            <tr>
+                <td>stock</td>
+                <td>
+                        ${product.stock}
+                </td>
+            </tr>
+            <tr>
+                <td>price</td>
+                <td class="price">
+                    <fmt:formatNumber value="${product.price}" type="currency"
+                                      currencySymbol="${product.currency.symbol}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>quantity</td>
+                <td>
+                    <input name="quantity" value="${ not empty error? param.quantity:1 }" class="quantity">
+                    <c:if test="${not empty error}">
+                        <div class="error">
+                                ${error}
+                        </div>
+                    </c:if>
+                </td>
+            </tr>
+        </table>
+        <button>Add to cart</button>
     </form>
 
     <table>
