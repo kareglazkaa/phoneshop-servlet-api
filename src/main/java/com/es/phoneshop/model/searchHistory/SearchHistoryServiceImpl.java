@@ -3,6 +3,7 @@ package com.es.phoneshop.model.searchHistory;
 import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -17,13 +18,13 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
     private SearchHistoryServiceImpl() {
     }
 
-    public static SearchHistoryServiceImpl getInstance() {
+    public static SearchHistoryServiceImpl getINSTANCE() {
         return INSTANCE;
     }
 
     public void addRecentProduct(SearchHistory searchHistory, Product product) {
         synchronized (lock) {
-            List<Product> products = searchHistory.getProducts();
+            List<Product> products=searchHistory.getProducts();
             int index = productContains(products, product.getId());
             if (index != -1) {
                 products.remove(index);
@@ -31,8 +32,8 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
             products.add(0, product);
 
             searchHistory.setProducts(products.stream()
-                    .limit(3)
-                    .collect(Collectors.toList()));
+                   .limit(3)
+                   .collect(Collectors.toList()));
         }
     }
 
