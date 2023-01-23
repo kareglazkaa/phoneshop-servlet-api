@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 public class ArrayListProductDaoTest {
-    private ProductDao productDao= ArrayListProductDao.getINSTANCE();
+    private ProductDao productDao = ArrayListProductDao.getInstance();
     private Product product;
     private String query;
 
@@ -41,6 +41,7 @@ public class ArrayListProductDaoTest {
     @Test
     public void saveProductTest() throws ProductNotFoundException {
         productDao.save(product);
+
         assertTrue(product.getId() > 0);
     }
 
@@ -58,6 +59,7 @@ public class ArrayListProductDaoTest {
     @Test
     public void getProductTest() throws ProductNotFoundException {
         Product result = productDao.getProduct(product.getId());
+
         assertNotNull(result);
         assertEquals("test", result.getCode());
     }
@@ -65,11 +67,10 @@ public class ArrayListProductDaoTest {
     @Test
     public void findProductsTest() {
         List<Product> products = productDao.findProducts(query, SortField.PRICE, SortOrder.DESC);
+
         assertTrue(products.stream().
                 filter(prd -> prd.getPrice() == null || prd.getStock() < 0).
                 collect(Collectors.toList()).
                 isEmpty());
-
     }
-
 }

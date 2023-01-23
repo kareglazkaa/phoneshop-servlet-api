@@ -27,7 +27,7 @@ public class SearchHistoryServiceImplTest {
 
     private SearchHistoryServiceImpl historyService;
     private DemoDataServletContextListener demo = new DemoDataServletContextListener();
-    private ProductDao productDao = ArrayListProductDao.getINSTANCE();
+    private ProductDao productDao = ArrayListProductDao.getInstance();
     List<Product> products;
 
     @Before
@@ -36,7 +36,7 @@ public class SearchHistoryServiceImplTest {
 
         demo.setSampleProducts();
 
-        historyService = SearchHistoryServiceImpl.getINSTANCE();
+        historyService = SearchHistoryServiceImpl.getInstance();
         products = historyService.getSearchHistory(request).getProducts();
     }
 
@@ -51,14 +51,5 @@ public class SearchHistoryServiceImplTest {
         assertNull(products.stream()
                 .filter(prd -> prd.getId().equals(0L))
                 .findAny().orElse(null));
-
-        /*historyService.addRecentProduct(historyService.getSearchHistory(request), productDao.getProduct(0L));
-        assertEquals(historyService.getSearchHistory(request).getProducts().size(), 1);
-
-        for (long i=0;i<5;i++){
-            historyService.addRecentProduct( historyService.getSearchHistory(request), productDao.getProduct(i));
-        }
-
-        assertEquals(historyService.getSearchHistory(request).getProducts().size(), 3);*/
     }
 }
