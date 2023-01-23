@@ -14,7 +14,7 @@ import java.util.Currency;
 import java.util.List;
 
 public class DemoDataServletContextListener implements ServletContextListener {
-    private ProductDao productDao = ArrayListProductDao.getINSTANCE();
+    private ProductDao productDao = ArrayListProductDao.getInstance();
 
 
     public DemoDataServletContextListener() {
