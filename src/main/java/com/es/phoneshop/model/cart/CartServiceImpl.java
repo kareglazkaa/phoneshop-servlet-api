@@ -16,7 +16,7 @@ public class CartServiceImpl implements CartService {
             CartServiceImpl.class.getName() + ".cart";
     private static final CartServiceImpl INSTANCE = new CartServiceImpl();
 
-    public CartServiceImpl() {
+    private CartServiceImpl() {
     }
 
     public static CartServiceImpl getInstance() {
@@ -36,7 +36,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
+    public void add(Cart cart, Long productId, int quantity) throws OutOfStockException{
         synchronized (lock) {
             Product product = productDao.getProduct(productId);
             int index = getItemIndex(cart, productId);

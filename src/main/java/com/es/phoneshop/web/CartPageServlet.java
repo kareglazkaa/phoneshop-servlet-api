@@ -3,22 +3,20 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.CartServiceImpl;
 import com.es.phoneshop.model.cart.OutOfStockException;
+import com.es.phoneshop.model.helper.QuantityHelper;
 import com.es.phoneshop.model.error.ErrorHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(name = "CartPageServlet", value = "/CartPageServlet")
 public class CartPageServlet extends HttpServlet {
-    private CartService cartService = new CartServiceImpl();
+    private CartService cartService = CartServiceImpl.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,7 +35,7 @@ public class CartPageServlet extends HttpServlet {
             Long productId = Long.valueOf(productsId[i]);
             int quantity = 0;
             try {
-                quantity = getQuantity(quantities[i], request);
+                quantity = QuantityHelper.getQuantity(quantities[i], request);
                 cartService.update(cartService.getCart(request.getSession()), productId, quantity);
             } catch (ParseException | OutOfStockException e) {
                 ErrorHandler.setErrorAttribute(errors, productId, e);
@@ -51,10 +49,4 @@ public class CartPageServlet extends HttpServlet {
         }
 
     }
-
-    private int getQuantity(String quantity, HttpServletRequest request) throws ParseException {
-        NumberFormat numberFormat = NumberFormat.getNumberInstance(request.getLocale());
-        return numberFormat.parse(quantity).intValue();
-    }
-
 }

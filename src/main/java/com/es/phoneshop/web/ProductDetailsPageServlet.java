@@ -13,12 +13,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-@WebServlet(name = "ProductDetailsPageServlet", value = "/ProductDetailsPageServlet")
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao = ArrayListProductDao.getInstance();
     private CartService cartService = CartServiceImpl.getInstance();
@@ -44,14 +42,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String quantityString = request.getParameter("quantity");
         Long productId = parseProductId(request);
-        try {
-            int quantity = getQuantity(quantityString, request);
-            cartService.add(cartService.getCart(request.getSession()), productId, quantity);
-        } catch (ParseException | OutOfStockException e) {
-            ErrorHandler.setErrorAttribute(request, e);
-            doGet(request, response);
-            return;
-        }
+
 
         response.sendRedirect(request.getContextPath() + "/products/" + productId + "?message=Product added to cart");
     }
@@ -61,8 +52,5 @@ public class ProductDetailsPageServlet extends HttpServlet {
         return Long.valueOf(productInfo);
     }
 
-    private int getQuantity(String quantity, HttpServletRequest request) throws ParseException {
-        NumberFormat numberFormat = NumberFormat.getNumberInstance(request.getLocale());
-        return numberFormat.parse(quantity).intValue();
-    }
+
 }

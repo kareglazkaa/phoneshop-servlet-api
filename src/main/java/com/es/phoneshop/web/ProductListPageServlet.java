@@ -5,6 +5,7 @@ import com.es.phoneshop.enums.SortOrder;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.CartServiceImpl;
 import com.es.phoneshop.model.cart.OutOfStockException;
+import com.es.phoneshop.model.helper.QuantityHelper;
 import com.es.phoneshop.model.error.ErrorHandler;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
@@ -15,7 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class ProductListPageServlet extends HttpServlet {
         String[] quantities = request.getParameterValues("quantity");
 
         try {
-            int quantity = getQuantity(quantities[index], request);
+            int quantity = QuantityHelper.getQuantity(quantities[index], request);
             cartService.add(cartService.getCart(request.getSession()), productId, quantity);
         } catch (ParseException | OutOfStockException ex) {
             ErrorHandler.setErrorAttribute(errors, productId, ex);
@@ -61,12 +61,5 @@ public class ProductListPageServlet extends HttpServlet {
             return;
         }
         response.sendRedirect(request.getContextPath() + "/products?message=Product added to cart");
-
     }
-
-    private int getQuantity(String quantity, HttpServletRequest request) throws ParseException {
-        NumberFormat numberFormat = NumberFormat.getNumberInstance(request.getLocale());
-        return numberFormat.parse(quantity).intValue();
-    }
-
 }
