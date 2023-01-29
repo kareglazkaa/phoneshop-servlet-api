@@ -8,7 +8,7 @@ import com.es.phoneshop.model.cart.OutOfStockException;
 import com.es.phoneshop.model.helper.QuantityHelper;
 import com.es.phoneshop.model.error.ErrorHandler;
 import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.searchHistory.SearchHistoryServiceImpl;
 
 import javax.servlet.ServletException;
@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
+    private static final String PRODUCT_LIST_JSP = "/WEB-INF/pages/productList.jsp";
     private ProductDao productDao = ArrayListProductDao.getInstance();
     private SearchHistoryServiceImpl searchHistoryServiceImpl = SearchHistoryServiceImpl.getInstance();
     private CartService cartService = CartServiceImpl.getInstance();
@@ -39,7 +40,7 @@ public class ProductListPageServlet extends HttpServlet {
                         Optional.ofNullable(sortFiled).map(SortField::valueOf).orElse(null),
                         Optional.ofNullable(sortOrder).map(SortOrder::valueOf).orElse(null)));
 
-        request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+        request.getRequestDispatcher(PRODUCT_LIST_JSP).forward(request, response);
 
     }
 

@@ -16,12 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CartPageServlet extends HttpServlet {
+    private static final String CART_JSP = "/WEB-INF/pages/cart.jsp";
     private CartService cartService = CartServiceImpl.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("cart", cartService.getCart(request.getSession()));
-        request.getRequestDispatcher("/WEB-INF/pages/cart.jsp").forward(request, response);
+        request.getRequestDispatcher(CART_JSP).forward(request, response);
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.es.phoneshop.model.cart;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.dao.ProductDao;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
@@ -40,7 +40,6 @@ public class CartServiceImpl implements CartService {
         synchronized (lock) {
             Product product = productDao.getProduct(productId);
             int index = getItemIndex(cart, productId);
-
             if (quantity > 0 && index != -1 && quantity + cart.getItems().get(index).getQuantity() <= product.getStock()) {
                 increaseCartQuantity(cart.getItems().get(index), quantity);
             } else if (quantity > 0 && index == -1 && quantity <= product.getStock()) {
@@ -57,7 +56,6 @@ public class CartServiceImpl implements CartService {
         synchronized (lock) {
             Product product = productDao.getProduct(productId);
             int index = getItemIndex(cart, productId);
-
             if (quantity > 0 && quantity <= product.getStock()) {
                 setCartQuantity(cart.getItems().get(index), quantity);
             } else {
@@ -74,6 +72,14 @@ public class CartServiceImpl implements CartService {
             cart.getItems().removeIf(cartItem ->
                     productId.equals(cartItem.getProduct().getId()));
 
+            recalculateCart(cart);
+        }
+    }
+
+    @Override
+    public void clearCart(Cart cart) {
+        synchronized (lock) {
+            cart.getItems().clear();
             recalculateCart(cart);
         }
     }

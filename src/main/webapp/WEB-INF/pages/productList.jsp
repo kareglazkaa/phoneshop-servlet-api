@@ -10,7 +10,6 @@
         <p>
             Welcome to Expert-Soft training!
         </p>
-
         <c:if test="${not empty param.message}">
             <div class="success">
                     ${param.message}
@@ -25,7 +24,7 @@
 
         <input name="query" value="${param.query}">
         <button>Search</button>
-
+        <br>
         <table>
             <thead>
             <tr>

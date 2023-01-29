@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.cart.OutOfStockException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,37 +17,36 @@ import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DeleteCartItemServletTest {
+public class OrderOverviewPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
     private HttpServletResponse response;
     @Mock
-    private RequestDispatcher requestDispatcher;
+    private ServletConfig config;
     @Mock
     private HttpSession session;
     @Mock
-    private ServletConfig config;
+    private RequestDispatcher requestDispatcher;
+    private DemoDataServletContextListener demo = new DemoDataServletContextListener();
+    private OrderOverviewPageServlet servlet = new OrderOverviewPageServlet();
 
-    private DeleteCartItemServlet servlet=new DeleteCartItemServlet();
     @Before
-    public void setup() throws ServletException {
+    public void setup() throws ServletException, OutOfStockException {
         servlet.init(config);
+
+        demo.setSampleProducts();
 
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getSession()).thenReturn(session);
-        when(request.getContextPath()).thenReturn("/phoneshop-servlet-api");
-        when(request.getPathInfo()).thenReturn("/0");
+
+        when(request.getPathInfo()).thenReturn("/" + TestHelper.createOrder().getSecureId());
     }
+
     @Test
-    public void testDoPost() throws ServletException, IOException {
-        servlet.doPost(request,response);
-
-        verify(response).sendRedirect(request.getContextPath()+"/cart?message=Cart item removed successful");
-
+    public void testDoGet() throws ServletException, IOException {
+        servlet.doGet(request, response);
     }
-
 }

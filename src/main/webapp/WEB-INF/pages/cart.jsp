@@ -6,9 +6,6 @@
 <jsp:useBean id="cart" type="com.es.phoneshop.model.cart.Cart" scope="request"/>
 <tags:master pageTitle="Cart">
     <form method="post" action="${pageContext.servletContext.contextPath}/cart">
-        <p>
-            Cart: ${cart}
-        </p>
         <c:if test="${not empty param.message}">
             <div class="success">
                     ${param.message}
@@ -82,6 +79,9 @@
         </table>
         <br>
         <button>Update</button>
+    </form>
+    <form>
+        <button formaction="${pageContext.servletContext.contextPath}/checkout">Checkout</button>
     </form>
     <form id="deleteCartItem" method="post"></form>
 

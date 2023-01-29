@@ -12,7 +12,7 @@
             ${product.description}
     </h2>
     <p></p>
-    <table border="0">
+    <table>
         <tr>
             <th>Start date</th>
             <th>Price</th>
