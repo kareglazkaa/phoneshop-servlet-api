@@ -1,5 +1,8 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.CartServiceImpl;
 import com.es.phoneshop.model.cart.OutOfStockException;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,15 +40,26 @@ public class CheckoutPageServletTest {
     private DemoDataServletContextListener demo = new DemoDataServletContextListener();
 
     private CheckoutPageServlet servlet =new CheckoutPageServlet();
+    private CartService cartService= CartServiceImpl.getInstance();
+    private String[] productIds = new String[]{"0", "1", "2"};
+    private String[] quantities = new String[]{"1", "3", "2"};
+
     @Before
     public void setup() throws ServletException, OutOfStockException {
         servlet.init(config);
 
         demo.setSampleProducts();
+        Cart cart = new Cart();
+
+        for (int i = 0; i < 3; i++) {
+            cartService.add(cart, Long.valueOf(productIds[i]),
+                    Integer.valueOf(quantities[i]));
+        }
+
 
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getSession()).thenReturn(session);
-        when(session.getAttribute(anyString())).thenReturn(TestHelper.createCart());
+        when(session.getAttribute(anyString())).thenReturn(cart);
     }
 
     @Test

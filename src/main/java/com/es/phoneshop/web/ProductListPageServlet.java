@@ -9,7 +9,7 @@ import com.es.phoneshop.model.helper.QuantityHelper;
 import com.es.phoneshop.model.error.ErrorHandler;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.model.searchHistory.SearchHistoryServiceImpl;
+import com.es.phoneshop.model.history.SearchHistoryServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

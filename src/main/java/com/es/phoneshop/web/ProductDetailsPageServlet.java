@@ -2,7 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.error.ErrorHandler;
 import com.es.phoneshop.model.helper.QuantityHelper;
-import com.es.phoneshop.model.searchHistory.SearchHistoryServiceImpl;
+import com.es.phoneshop.model.history.SearchHistoryServiceImpl;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.CartServiceImpl;
 import com.es.phoneshop.model.cart.OutOfStockException;

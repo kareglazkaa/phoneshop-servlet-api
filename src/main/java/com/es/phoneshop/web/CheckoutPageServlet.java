@@ -22,7 +22,7 @@ public class CheckoutPageServlet extends HttpServlet {
     private static final String CHECKOUT_JSP = "/WEB-INF/pages/checkout.jsp";
     private CartService cartService = CartServiceImpl.getInstance();
     private OrderService orderService = OrderServiceImpl.getInstance();
-    private Order order;
+    private Order order=new Order();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,18 +35,26 @@ public class CheckoutPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request.getSession());
-        order = orderService.getOrder(cart);
+        if(cart.getItems().isEmpty()){
+            request.setAttribute("error", "Cart is empty");
+            request.setAttribute("order", orderService.getOrder(cart));
+            request.setAttribute("paymentMethods", orderService.getPaymentMethods());
+            request.getRequestDispatcher(CHECKOUT_JSP).forward(request, response);
+        }
+        else {
+            order = orderService.getOrder(cart);
 
-        Map<String, String> errors = new HashMap<>();
+            Map<String, String> errors = new HashMap<>();
 
-        setRequiredParameter(request, "firstName", errors, order::setFirstName);
-        setRequiredParameter(request, "lastName", errors, order::setLastName);
-        setRequiredParameter(request, "phone", errors, order::setPhone);
-        setRequiredParameter(request, "deliveryDate", errors, this::parseDeliverDate);
-        setRequiredParameter(request, "deliveryAddress", errors, order::setDeliveryAddress);
-        setRequiredParameter(request, "paymentMethod", errors, this::parsePaymentMethod);
+            setRequiredParameter(request, "firstName", errors, order::setFirstName);
+            setRequiredParameter(request, "lastName", errors, order::setLastName);
+            setRequiredParameter(request, "phone", errors, order::setPhone);
+            setRequiredParameter(request, "deliveryDate", errors, this::parseDeliverDate);
+            setRequiredParameter(request, "deliveryAddress", errors, order::setDeliveryAddress);
+            setRequiredParameter(request, "paymentMethod", errors, this::parsePaymentMethod);
 
-        handleErrors(request, response, errors);
+            handleErrors(request, response, errors);
+        }
 
     }
 

@@ -1,6 +1,12 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.CartServiceImpl;
 import com.es.phoneshop.model.cart.OutOfStockException;
+import com.es.phoneshop.model.order.Order;
+import com.es.phoneshop.model.order.OrderService;
+import com.es.phoneshop.model.order.OrderServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +18,6 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -27,11 +32,13 @@ public class OrderOverviewPageServletTest {
     @Mock
     private ServletConfig config;
     @Mock
-    private HttpSession session;
-    @Mock
     private RequestDispatcher requestDispatcher;
     private DemoDataServletContextListener demo = new DemoDataServletContextListener();
     private OrderOverviewPageServlet servlet = new OrderOverviewPageServlet();
+    private CartService cartService= CartServiceImpl.getInstance();
+    private OrderService orderService= OrderServiceImpl.getInstance();
+    private String[] productIds = new String[]{"0", "1", "2"};
+    private String[] quantities = new String[]{"1", "3", "2"};
 
     @Before
     public void setup() throws ServletException, OutOfStockException {
@@ -40,9 +47,18 @@ public class OrderOverviewPageServletTest {
         demo.setSampleProducts();
 
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
-        when(request.getSession()).thenReturn(session);
 
-        when(request.getPathInfo()).thenReturn("/" + TestHelper.createOrder().getSecureId());
+        Cart cart = new Cart();
+
+        for (int i = 0; i < 3; i++) {
+            cartService.add(cart, Long.valueOf(productIds[i]),
+                    Integer.valueOf(quantities[i]));
+        }
+
+        Order order=orderService.getOrder(cart);
+        orderService.placeOrder(order);
+
+        when(request.getPathInfo()).thenReturn("/" + order.getSecureId());
     }
 
     @Test

@@ -9,6 +9,9 @@
     <td>
         <c:set var="error" value="${errors[name]}"/>
         <input name="${name}"
+        <c:if test="${name eq 'deliveryDate'}">
+            type="date"
+        </c:if>
                value="${not empty error?param[name]:order[name]}">
         <c:if test="${not empty error}">
             <div class="error">

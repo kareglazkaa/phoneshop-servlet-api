@@ -24,7 +24,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrder(Cart cart) {
+    public synchronized Order getOrder(Cart cart) {
         Order order = new Order();
         order.setItems(cart.getItems().stream().map(item -> {
             try {
@@ -42,18 +42,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<PaymentMethod> getPaymentMethods() {
+    public synchronized List<PaymentMethod> getPaymentMethods() {
         return Arrays.asList(PaymentMethod.values());
     }
 
     @Override
-    public void placeOrder(Order order) {
+    public synchronized void placeOrder(Order order) {
         order.setSecureId(UUID.randomUUID().toString());
         orderDao.save(order);
     }
 
     @Override
-    public void deleteOrder(Order order) {
+    public synchronized void deleteOrder(Order order) {
         orderDao.delete(order.getId());
     }
 

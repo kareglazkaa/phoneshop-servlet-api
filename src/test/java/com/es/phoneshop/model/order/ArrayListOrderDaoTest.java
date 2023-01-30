@@ -3,7 +3,6 @@ package com.es.phoneshop.model.order;
 import com.es.phoneshop.dao.OrderDao;
 import com.es.phoneshop.model.cart.OutOfStockException;
 import com.es.phoneshop.web.DemoDataServletContextListener;
-import com.es.phoneshop.web.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ public class ArrayListOrderDaoTest {
     @Before
     public void setup() throws OutOfStockException {
         demo.setSampleProducts();
-        order = TestHelper.createOrder();
+        order = new Order();
     }
 
     @Test

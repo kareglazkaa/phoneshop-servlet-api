@@ -39,7 +39,9 @@ public class CartPageServletTest {
     private HttpSession session;
     private CartPageServlet servlet = new CartPageServlet();
     private DemoDataServletContextListener demo = new DemoDataServletContextListener();
-
+    private CartService cartService = CartServiceImpl.getInstance();
+    private String[] productIds = new String[]{"0", "1", "2"};
+    private String[] quantities = new String[]{"1", "3", "2"};
 
     @Before
     public void setup() throws ServletException, OutOfStockException {
@@ -50,12 +52,19 @@ public class CartPageServletTest {
         when(request.getContextPath()).thenReturn("/phoneshop-servlet-api");
 
         demo.setSampleProducts();
+        Cart cart = new Cart();
+
+        for (int i = 0; i < 3; i++) {
+            cartService.add(cart, Long.valueOf(productIds[i]),
+                    Integer.valueOf(quantities[i]));
+        }
 
         when(request.getLocale()).thenReturn(new Locale(anyString()));
-        when(request.getParameterValues("productId")).thenReturn(new String[]{"0", "1", "2"});
-        when(request.getParameterValues("quantity")).thenReturn(new String[]{"1", "3", "2"});
+        when(request.getParameterValues("productId")).thenReturn(productIds);
+        when(request.getParameterValues("quantity")).thenReturn(quantities);
 
-        when(session.getAttribute(anyString())).thenReturn(TestHelper.createCart());
+        when(session.getAttribute(anyString())).thenReturn(cart);
+
     }
 
     @Test

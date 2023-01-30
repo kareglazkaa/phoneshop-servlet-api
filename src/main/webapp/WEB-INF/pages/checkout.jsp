@@ -12,6 +12,11 @@
                     ${param.message}
             </div>
         </c:if>
+        <c:if test="${not empty error}">
+            <div class="error">
+                ${error}
+            </div>
+        </c:if>
         <c:if test="${not empty errors}">
             <div class="error">
                 Error with adding data

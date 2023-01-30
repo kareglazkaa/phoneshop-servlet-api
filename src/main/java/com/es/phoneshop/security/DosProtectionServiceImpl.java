@@ -37,7 +37,7 @@ public class DosProtectionServiceImpl implements DosProtectionService {
     }
 
     @Override
-    public boolean isAllowed(String ip) {
+    public synchronized boolean isAllowed(String ip) {
         currentIp = ip;
         setTimerForIp(ip);
 

@@ -1,8 +1,6 @@
 package com.es.phoneshop.model.order;
 
 import com.es.phoneshop.dao.OrderDao;
-import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +36,6 @@ public class ArrayListOrderDao implements OrderDao {
             order.setId(maxId.getAndIncrement());
             orders.add(order);
         }
-
     }
 
     @Override
@@ -51,13 +48,12 @@ public class ArrayListOrderDao implements OrderDao {
 
     @Override
     public synchronized void delete(Long id) throws OrderNotFoundException {
-            Order orderToDelete = orders.stream()
-                    .filter(order -> id.equals(order.getId()))
-                    .findAny()
-                    .orElseThrow(() -> new OrderNotFoundException());
+        Order orderToDelete = orders.stream()
+                .filter(order -> id.equals(order.getId()))
+                .findAny()
+                .orElseThrow(() -> new OrderNotFoundException());
 
-            orders.remove(orderToDelete);
-
+        orders.remove(orderToDelete);
     }
 
     public synchronized static OrderDao getInstance() {

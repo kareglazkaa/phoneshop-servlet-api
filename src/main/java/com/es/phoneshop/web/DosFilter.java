@@ -19,10 +19,8 @@ public class DosFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain filterChain) throws ServletException, IOException {
         if (dosProtectionService.isAllowed(request.getRemoteAddr())) {
-            System.out.println("E");
             filterChain.doFilter(request, response);
         } else {
-            System.out.println("N");
             ((HttpServletResponse) response).setStatus(429);
         }
     }
