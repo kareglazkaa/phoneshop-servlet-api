@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CheckoutPageServletTest {
+public class MiniCartServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -34,39 +34,24 @@ public class CheckoutPageServletTest {
     private RequestDispatcher requestDispatcher;
     @Mock
     private HttpSession session;
-    private DemoDataServletContextListener demo = new DemoDataServletContextListener();
-
-    private CheckoutPageServlet servlet =new CheckoutPageServlet();
-    private CartService cartService= CartServiceImpl.getInstance();
-    private String[] productIds = new String[]{"0", "1", "2"};
-    private String[] quantities = new String[]{"1", "3", "2"};
+    private static final String MINICART_JSP = "/WEB-INF/pages/minicart.jsp";
+    private MiniCartServlet servlet = new MiniCartServlet();
 
     @Before
     public void setup() throws ServletException, OutOfStockException {
         servlet.init(config);
 
-        demo.setSampleProducts();
-        Cart cart = new Cart();
-
-        for (int i = 0; i < 3; i++) {
-            cartService.add(cart, Long.valueOf(productIds[i]),
-                    Integer.valueOf(quantities[i]));
-        }
-
-
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getSession()).thenReturn(session);
-        when(session.getAttribute(anyString())).thenReturn(cart);
-    }
 
-    @Test
-    public void testDoGet() throws ServletException, IOException {
-        servlet.doGet(request,response);
-
-        verify(requestDispatcher).forward(request,response);
     }
     @Test
-    public void testDoPost() throws ServletException, IOException {
-        servlet.doPost(request, response);
+    public void testService() throws ServletException, IOException {
+
+        servlet.service(request, response);
+
+        verify(request.getRequestDispatcher(MINICART_JSP)).include(request, response);
+
     }
+
 }

@@ -1,12 +1,14 @@
 package com.es.phoneshop.model.order;
 
 import com.es.phoneshop.enums.PaymentMethod;
+import com.es.phoneshop.model.Item;
 import com.es.phoneshop.model.cart.Cart;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class Order extends Cart {
+public class Order extends Cart implements Item, Serializable {
     private Long id;
     private String secureId;
     private BigDecimal subtotal;

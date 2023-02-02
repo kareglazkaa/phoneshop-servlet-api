@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.dao.GenericDao;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.enums.SortField;
 import com.es.phoneshop.enums.SortOrder;
@@ -7,37 +8,29 @@ import com.es.phoneshop.enums.SortOrder;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ArrayList;
-
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class ArrayListProductDao implements ProductDao {
-    private static final ProductDao INSTANCE = new ArrayListProductDao();
-    private List<Product> products = new ArrayList<>();
-    private AtomicLong maxId = new AtomicLong();
-    private Object lock = new Object();
+public class ArrayListProductDao extends GenericDao<Product> implements ProductDao {
+    private static final ArrayListProductDao INSTANCE = new ArrayListProductDao();
+    private ReadWriteLock lock = new ReentrantReadWriteLock();
+    private Lock readLock = lock.readLock();
+    private Lock writeLock = lock.writeLock();
 
     private ArrayListProductDao() {
     }
 
-    public static ProductDao getInstance() {
+    public static ArrayListProductDao getInstance() {
         return INSTANCE;
     }
 
     @Override
-    public Product getProduct(Long id) {
-        synchronized (lock) {
-            return products.stream()
-                    .filter(product -> id.equals(product.getId()))
-                    .findAny()
-                    .orElseThrow(() -> new ProductNotFoundException());
-        }
-    }
-
-    @Override
     public List<Product> findProducts(String query, SortField sortFiled, SortOrder sortOrder) {
-        synchronized (lock) {
+        readLock.lock();
+        try {
+            List<Product> products = super.getObjects();
             Comparator<Product> comparatorFiled = Comparator.comparing(product -> {
                 if (SortField.DESCRIPTION == sortFiled)
                     return (Comparable) product.getDescription();
@@ -59,43 +52,28 @@ public class ArrayListProductDao implements ProductDao {
                     .filter(product -> product.getStock() > 0)
                     .sorted(comparatorFiled)
                     .collect(Collectors.toList());
+        } finally {
+            readLock.unlock();
         }
+    }
+
+    @Override
+    public void delete(Long id) {
+        writeLock.lock();
+        List<Product> products = super.getObjects();
+        Product productToDelete = products.stream()
+                .filter(product -> id.equals(product.getId()))
+                .findAny()
+                .orElseThrow(() -> new ProductNotFoundException());
+
+        products.remove(productToDelete);
+        writeLock.unlock();
     }
 
     private Long containsQuery(String query, String productDescription) {
         return Arrays.stream(query.split(" "))
                 .filter(productDescription::contains)
                 .count();
-    }
-
-    @Override
-    public void save(Product product) {
-        synchronized (lock) {
-            Long id = product.getId();
-            if (id != null) {
-                for (int i = 0; i < products.size(); i++) {
-                    if (id.equals(products.get(i).getId())) {
-                        products.set(i, product);
-                        break;
-                    }
-                }
-            } else {
-                product.setId(maxId.getAndIncrement());
-                products.add(product);
-            }
-        }
-    }
-
-    @Override
-    public void delete(Long id) {
-        synchronized (lock) {
-            Product productToDelete = products.stream()
-                    .filter(product -> id.equals(product.getId()))
-                    .findAny()
-                    .orElseThrow(() -> new ProductNotFoundException());
-
-            products.remove(productToDelete);
-        }
     }
 
 }

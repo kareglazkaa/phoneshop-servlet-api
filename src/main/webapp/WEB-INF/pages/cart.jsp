@@ -11,7 +11,6 @@
                     ${param.message}
             </div>
         </c:if>
-
         <c:if test="${not empty errors}">
             <div class="error">
                 There were errors updating cart
@@ -77,12 +76,15 @@
                                                   currencySymbol="${cart.items[0].product.currency.symbol}"/></td>
             </tr>
         </table>
-        <br>
-        <button>Update</button>
-    </form>
-    <form>
-        <button formaction="${pageContext.servletContext.contextPath}/checkout">Checkout</button>
-    </form>
-    <form id="deleteCartItem" method="post"></form>
+
+        <c:if test="${not empty cart.items}">
+            <br>
+            <button>Update</button>
+            </form>
+            <form>
+                <button formaction="${pageContext.servletContext.contextPath}/checkout">Checkout</button>
+            </form>
+            <form id="deleteCartItem" method="post"></form>
+        </c:if>
 
 </tags:master>

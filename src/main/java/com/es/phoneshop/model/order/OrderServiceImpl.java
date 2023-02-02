@@ -1,6 +1,5 @@
 package com.es.phoneshop.model.order;
 
-import com.es.phoneshop.dao.OrderDao;
 import com.es.phoneshop.enums.PaymentMethod;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartItem;
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
     private Object lock = new Object();
     private static final OrderServiceImpl INSTANCE = new OrderServiceImpl();
-    private OrderDao orderDao = ArrayListOrderDao.getInstance();
+    private ArrayListOrderDao orderDao = ArrayListOrderDao.getInstance();
 
     private OrderServiceImpl() {
     }
@@ -50,11 +49,6 @@ public class OrderServiceImpl implements OrderService {
     public synchronized void placeOrder(Order order) {
         order.setSecureId(UUID.randomUUID().toString());
         orderDao.save(order);
-    }
-
-    @Override
-    public synchronized void deleteOrder(Order order) {
-        orderDao.delete(order.getId());
     }
 
     private BigDecimal calculateDeliveryCost() {

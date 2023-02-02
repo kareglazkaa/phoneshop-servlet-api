@@ -1,63 +1,51 @@
 package com.es.phoneshop.security;
 
 import java.util.Map;
-import java.util.TimerTask;
-import java.util.HashMap;
-import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DosProtectionServiceImpl implements DosProtectionService {
 
     private static final DosProtectionService INSTANCE = new DosProtectionServiceImpl();
-    private static final long THRESHOLD = 20;
+    private static final Long THRESHOLD = 20L;
     private static final Long TIME = 60 * 1000L;
+    private ReadWriteLock lock = new ReentrantReadWriteLock();
+    private Lock readLock = lock.readLock();
     private Map<String, Long> countMap = new ConcurrentHashMap<>();
-
-    private Map<String, Timer> timers = new HashMap<>();
+    private Map<String, Long> timerMap = new ConcurrentHashMap<>();
 
     private DosProtectionServiceImpl() {
 
     }
-    private String currentIp;
-    TimerTask task = new TimerTask() {
-        @Override
-        public void run() {
-            countMap.put(currentIp, 0L);
-
-        }
-    };
-
-    private void setTimerForIp(String ip) {
-        Timer timer = timers.get(ip);
-        if (timer == null) {
-            timer = new Timer();
-            timer.schedule(task, 0L, TIME);
-            timers.put(ip, timer);
-        }
-    }
 
     @Override
-    public synchronized boolean isAllowed(String ip) {
-        currentIp = ip;
-        setTimerForIp(ip);
+    public boolean isAllowed(String ip) {
+        readLock.lock();
+        try {
+            Long count = countMap.get(ip);
+            Long time = System.currentTimeMillis();
 
-        Long count = countMap.get(ip);
-
-        if (count == null || count.equals(0L)) {
-            count = 1L;
-        } else {
-            if (count > THRESHOLD) {
-                return false;
+            if (count == null) {
+                count = 1L;
+                timerMap.put(ip, time);
+            } else {
+                if (time - timerMap.get(ip) > TIME) {
+                    count = 0L;
+                    timerMap.put(ip, time);
+                }
+                count++;
+                if (count > THRESHOLD) {
+                    return false;
+                }
             }
-            count++;
+
+            countMap.put(ip, count);
+            return true;
+        } finally {
+            readLock.unlock();
         }
-
-        countMap.put(ip, count);
-        return true;
-    }
-
-    private static Long resetCount() {
-        return Long.valueOf(0);
     }
 
     public static DosProtectionService getInstance() {

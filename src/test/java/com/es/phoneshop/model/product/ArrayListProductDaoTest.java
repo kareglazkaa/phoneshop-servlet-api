@@ -1,6 +1,5 @@
 package com.es.phoneshop.model.product;
 
-import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.enums.SortField;
 import com.es.phoneshop.enums.SortOrder;
 import org.junit.Before;
@@ -17,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 public class ArrayListProductDaoTest {
-    private ProductDao productDao = ArrayListProductDao.getInstance();
+    private ArrayListProductDao productDao = ArrayListProductDao.getInstance();
     private Product product;
     private String query;
 
@@ -59,7 +58,7 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void getProductTest() throws ProductNotFoundException {
-        Product result = productDao.getProduct(product.getId());
+        Product result = productDao.get(product.getId());
 
         assertNotNull(result);
         assertEquals("test", result.getCode());

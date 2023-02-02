@@ -11,5 +11,4 @@ public interface OrderService {
     List<PaymentMethod> getPaymentMethods();
 
     void placeOrder(Order order);
-    void deleteOrder(Order order);
 }

@@ -4,7 +4,7 @@ import com.es.phoneshop.model.product.Product;
 
 import java.io.Serializable;
 
-public class CartItem implements Serializable,Cloneable {
+public class CartItem implements Serializable, Cloneable {
     private Product product;
     private int quantity;
 
