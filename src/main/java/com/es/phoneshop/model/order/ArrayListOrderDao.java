@@ -10,10 +10,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ArrayListOrderDao extends GenericDao<Order> implements OrderDao {
     private static final ArrayListOrderDao INSTANCE = new ArrayListOrderDao();
-    private ReadWriteLock lock=new ReentrantReadWriteLock();
-    private Lock readLock=lock.readLock();
+    private ReadWriteLock lock = new ReentrantReadWriteLock();
+    private Lock readLock = lock.readLock();
+
     private ArrayListOrderDao() {
     }
+
     @Override
     public Order getOrderBySecureId(String secureId) {
         readLock.lock();
@@ -23,11 +25,11 @@ public class ArrayListOrderDao extends GenericDao<Order> implements OrderDao {
                     .filter(order -> secureId.equals(order.getSecureId()))
                     .findAny()
                     .orElseThrow(() -> new OrderNotFoundException());
-        }
-        finally {
+        } finally {
             readLock.unlock();
         }
     }
+
     public static ArrayListOrderDao getInstance() {
         return INSTANCE;
     }

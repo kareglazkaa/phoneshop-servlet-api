@@ -27,7 +27,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setItems(cart.getItems().stream().map(item -> {
             try {
-                return (CartItem) item.clone();
+                return item.clone();
             } catch (CloneNotSupportedException e) {
                 throw new RuntimeException(e);
             }

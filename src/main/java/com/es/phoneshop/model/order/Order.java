@@ -13,8 +13,8 @@ public class Order extends Cart implements Item, Serializable {
     private String secureId;
     private BigDecimal subtotal;
     private BigDecimal deliveryCost;
-
     private String firstName;
+    private String lastName;
 
     public Long getId() {
         return id;
@@ -48,7 +48,6 @@ public class Order extends Cart implements Item, Serializable {
         return paymentMethod;
     }
 
-    private String lastName;
     private String phone;
 
     private LocalDate deliveryDate;

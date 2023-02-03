@@ -61,11 +61,7 @@ public class ArrayListProductDao extends GenericDao<Product> implements ProductD
     public void delete(Long id) {
         writeLock.lock();
         List<Product> products = super.getObjects();
-        Product productToDelete = products.stream()
-                .filter(product -> id.equals(product.getId()))
-                .findAny()
-                .orElseThrow(() -> new ProductNotFoundException());
-
+        Product productToDelete = get(id);
         products.remove(productToDelete);
         writeLock.unlock();
     }
