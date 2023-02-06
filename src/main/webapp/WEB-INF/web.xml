@@ -94,6 +94,16 @@
         <servlet-name>orderOverview</servlet-name>
         <url-pattern>/order/overview/*</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>advancedSearch</servlet-name>
+        <servlet-class>com.es.phoneshop.web.AdvancedSearchPageServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>advancedSearch</servlet-name>
+        <url-pattern>/products/advancedSearch</url-pattern>
+    </servlet-mapping>
 
     <filter>
         <filter-name>dosFilter</filter-name>
@@ -125,6 +135,6 @@
         <location>/WEB-INF/pages/error/error404.jsp</location>
         <error-code>404</error-code>
     </error-page>
-
+    
 
 </web-app>

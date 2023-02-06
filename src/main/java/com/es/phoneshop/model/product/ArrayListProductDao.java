@@ -2,9 +2,12 @@ package com.es.phoneshop.model.product;
 
 import com.es.phoneshop.dao.GenericDao;
 import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.enums.SearchMethod;
 import com.es.phoneshop.enums.SortField;
 import com.es.phoneshop.enums.SortOrder;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -52,6 +55,36 @@ public class ArrayListProductDao extends GenericDao<Product> implements ProductD
                     .filter(product -> product.getStock() > 0)
                     .sorted(comparatorFiled)
                     .collect(Collectors.toList());
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    @Override
+    public List<Product> advancedFindProducts(String description, BigDecimal minPrice,
+                                              BigDecimal maxPrice, SearchMethod searchMethod) {
+        readLock.lock();
+        try {
+            Comparator<Product> comparatorFiled = Comparator.comparing(product ->
+                     (Comparable) containsQuery(description, product.getDescription()));
+
+            List<Product> products = super.getObjects();
+
+            products= products.stream()
+                    .filter(product -> description.isEmpty() || containsQuery(description, product.getDescription()) != 0)
+                    .filter(product -> minPrice == null || product.getPrice().compareTo(minPrice) > 0)
+                    .filter(product -> maxPrice == null || product.getPrice().compareTo(maxPrice) < 0)
+                    .sorted(comparatorFiled.reversed())
+                    .collect(Collectors.toList());
+
+            if (SearchMethod.ALLWORDS.equals(searchMethod)) {
+                products=products.stream()
+                        .filter(product->description.isEmpty() || description.equals(product.getDescription()))
+                        .sorted(comparatorFiled.reversed())
+                        .collect(Collectors.toList());
+            }
+
+            return products;
         } finally {
             readLock.unlock();
         }
